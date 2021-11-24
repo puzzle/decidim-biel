@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DecidimOCL
+module DecidimBiel
   module Proposals
     module Admin
       module ProposalNoteCreatedEvent

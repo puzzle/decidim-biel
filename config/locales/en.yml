@@ -120,7 +120,7 @@ en:
       proposals:
         filters:
           activity: Kind
-  decidim_ocl:
+  decidim_biel:
     maps:
       gis_lu:
         attribution: '<a href="https://www.gis.stadtluzern.ch/">GIS LU</a>'
@@ -134,7 +134,7 @@ en:
   devise:
     mailer:
       confirmation_instructions:
-        subject: "Open Community Luzern: Confirm E-Mail"
+        subject: "Decidim Biel: Confirm E-Mail"
       reset_password_instructions:
         action: Change my password
         greeting: Hello %{recipient}!

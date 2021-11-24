@@ -2,7 +2,7 @@
 
 require 'active_support/concern'
 
-module DecidimOCL
+module DecidimBiel
   module ParticipatoryProcesses
     module ProcessMCell
       extend ActiveSupport::Concern

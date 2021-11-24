@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DecidimOCL
+module DecidimBiel
   module Meetings
     # Overwrites the MeetingPresenter module to use first image from text
     module MeetingPresenter

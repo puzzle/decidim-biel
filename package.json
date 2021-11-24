@@ -1,5 +1,5 @@
 {
-  "name": "decidim_ocl",
+  "name": "decidim_biel",
   "private": true,
   "dependencies": {
     "esri-leaflet": "^2.5.0",

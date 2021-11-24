@@ -7,7 +7,7 @@
 Projekt festlegen
 ```bash
 openshift_user=<user>
-project=pitc-decidim-luzern-int
+project=pitc-stbi-decidim-int
 cluster=<openshift cluster>
 ```
 
@@ -30,11 +30,11 @@ oc policy add-role-to-user admin <user>
 ...
 ```
 
-Decidim-OCL-Configmanagement clonen
+Decidim-Biel-Configmanagement clonen
 
 ```bash
-git clone git@ssh.gitlab.puzzle.ch:pitc_ruby/decidim-luzern-configmanagement.git
-cd decidim-luzern-configmanagement
+git clone git@ssh.gitlab.puzzle.ch:pitc_ruby/decidim-biel-configmanagement.git
+cd decidim-biel-configmanagement
 cm_path=${pwd}
 ```
 
@@ -73,7 +73,7 @@ cat projects/puzzletime/puzzle/integration.yml |\
 Projekt aufsetzen
 
 ```bash
-bin/cli stages | grep decidim-luzern # Richtige umgebung kopieren (ganze Zeile)
+bin/cli stages | grep decidim-biel # Richtige umgebung kopieren (ganze Zeile)
 stage='<stage>' # <stage> mit Umgebung ersetzen
 
 oc login https://ose3-master.puzzle.ch:8443 -u $openshift_user
@@ -138,8 +138,8 @@ Auf neuem Cluster
 pod=$(oc get pod -o name | grep -P 'postgresql-(?!backup)' | cut -d / -f 2)
 oc rsh $pod
 psql
-CREATE database "decidim_luzern_production";
-\c decidim_luzern_production
+CREATE database "decidim_biel_production";
+\c decidim_biel_production
 CREATE EXTENSION IF NOT EXISTS "ltree";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 \q

@@ -2,7 +2,7 @@
 
 require 'net/http'
 
-module DecidimOCL
+module DecidimBiel
   module Verifications
     module Sms
       class AspsmsGateway
@@ -18,10 +18,10 @@ module DecidimOCL
 
           response = Net::HTTP.post(uri, payload)
           response.code == '200' && (begin
-                                       JSON(response.body)['StatusCode'] == '1'
-                                     rescue StandardError
-                                       false
-                                     end)
+            JSON(response.body)['StatusCode'] == '1'
+          rescue StandardError
+            false
+          end)
         end
 
         class << self
@@ -45,12 +45,12 @@ module DecidimOCL
 
         def payload
           {
-            "UserName": user_key,
-            "Password": password,
-            "Originator": translated('sms_originator_max_11_alphabetic_characters'),
-            "Recipients": [@mobile_phone_number],
-            "MessageText": translated('sms_text', code: @code, organization: organization_name),
-            "AffiliateID": affiliate_id
+            UserName: user_key,
+            Password: password,
+            Originator: translated('sms_originator_max_11_alphabetic_characters'),
+            Recipients: [@mobile_phone_number],
+            MessageText: translated('sms_text', code: @code, organization: organization_name),
+            AffiliateID: affiliate_id
           }.compact.to_json
         end
 
@@ -67,7 +67,7 @@ module DecidimOCL
         end
 
         def translated(key, *args)
-          I18n.t("decidim_ocl.verifications.sms.aspsms_gateway.#{key}", *args)
+          I18n.t("decidim_biel.verifications.sms.aspsms_gateway.#{key}", *args)
         end
 
         def organization

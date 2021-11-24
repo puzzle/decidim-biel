@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DecidimOCL
+module DecidimBiel
   module Meetings
     module ContentBlocks
       # Only show events that are today or in the future

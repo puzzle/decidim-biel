@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DecidimOCL
+module DecidimBiel
   module Forms
     module AnswerQuestionnaire
       def answer_questionnaire
@@ -11,7 +11,7 @@ module DecidimOCL
           id = form.context.session_token
 
           if email.present?
-            DecidimOCL::Surveys::SurveyAnsweredMailer.answered(email, component, id).deliver_now
+            DecidimBiel::Surveys::SurveyAnsweredMailer.answered(email, component, id).deliver_now
           end
         end
       end

@@ -4,7 +4,7 @@
 # nodoc
 class BackupCheck
   def initialize
-    @project = 'pitc-decidim-luzern-prod'
+    @project = 'pitc-stbi-decidim-prod'
   end
 
   def run

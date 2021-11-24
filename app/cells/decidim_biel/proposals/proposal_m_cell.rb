@@ -2,7 +2,7 @@
 
 require 'active_support/concern'
 
-module DecidimOCL
+module DecidimBiel
   module Proposals
     module ProposalMCell
       extend ActiveSupport::Concern

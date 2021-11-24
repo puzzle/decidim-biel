@@ -1,3 +1,46 @@
+GIT
+  remote: https://github.com/OpenSourcePolitics/decidim-urlaliases
+  revision: 3527043c1ce2886ef86cd1f34e14d2bef5c759bb
+  specs:
+    decidim-url_aliases (0.0.1)
+      decidim-core (~> 0.24)
+      rails (>= 5.2)
+      redirector
+
+GIT
+  remote: https://github.com/mainio/decidim-module-antivirus
+  revision: cdc703620382481287b9eab96a9fc268657df8ec
+  branch: release/0.24-stable
+  specs:
+    decidim-antivirus (0.24.0)
+      decidim-core (~> 0.24.0)
+      ratonvirus (~> 0.1.0)
+      ratonvirus-clamby (~> 0.1.0)
+
+GIT
+  remote: https://github.com/mainio/decidim-module-term_customizer
+  revision: 0e823f4f768f6255de57559c618dcad784c5d655
+  specs:
+    decidim-term_customizer (0.24.0)
+      decidim-admin (~> 0.24.0)
+      decidim-core (~> 0.24.0)
+
+GIT
+  remote: https://github.com/puzzle/decidim-module-jitsi-meetings
+  revision: 091919299c1150638fabb7b88bcd010de4e02952
+  tag: 0.24.2
+  specs:
+    decidim-jitsi_meetings (0.24.2)
+      decidim-core (= 0.24.2)
+
+GIT
+  remote: https://github.com/puzzle/decidim-module-navbar_links
+  revision: 1d1ef6eefa40337ef870156d80c02bf64823470a
+  tag: v0.24.2
+  specs:
+    decidim-navbar_links (0.24.2)
+      decidim-core (= 0.24.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -116,6 +159,7 @@ GEM
     chef-utils (17.0.242)
       concurrent-ruby
     childprocess (3.0.0)
+    clamby (1.6.6)
     coderay (1.1.3)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -126,6 +170,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
+    colorize (0.8.1)
     concurrent-ruby (1.1.8)
     cookiejar (0.3.3)
     crack (0.4.5)
@@ -199,6 +244,11 @@ GEM
       decidim-core (= 0.24.2)
       jquery-rails (~> 4.4)
       redcarpet (~> 3.5, >= 3.5.1)
+    decidim-conferences (0.24.2)
+      decidim-core (= 0.24.2)
+      decidim-meetings (= 0.24.2)
+      wicked_pdf (~> 1.4)
+      wkhtmltopdf-binary (~> 0.12)
     decidim-core (0.24.2)
       active_link_to (~> 1.0)
       anchored (~> 1.1)
@@ -263,6 +313,10 @@ GEM
       decidim-core (= 0.24.2)
       kaminari (~> 1.2, >= 1.2.1)
       searchlight (~> 4.1)
+    decidim-decidim_awesome (0.7.2)
+      decidim-admin (>= 0.23.0, < 0.25)
+      decidim-core (>= 0.23.0, < 0.25)
+      sassc (~> 2.3)
     decidim-dev (0.24.2)
       byebug (~> 11.0)
       capybara (~> 3.24)
@@ -297,6 +351,17 @@ GEM
       wkhtmltopdf-binary (~> 0.12)
     decidim-generators (0.24.2)
       decidim-core (= 0.24.2)
+    decidim-initiatives (0.24.2)
+      decidim-admin (= 0.24.2)
+      decidim-comments (= 0.24.2)
+      decidim-core (= 0.24.2)
+      decidim-verifications (= 0.24.2)
+      kaminari (~> 1.2, >= 1.2.1)
+      origami (~> 2.1)
+      virtus-multiparams (~> 0.1)
+      wicked (~> 1.3)
+      wicked_pdf (~> 1.4)
+      wkhtmltopdf-binary (~> 0.12)
     decidim-meetings (0.24.2)
       cells-erb (~> 0.1.0)
       cells-rails (~> 0.0.9)
@@ -306,6 +371,9 @@ GEM
       jquery-tmpl-rails (~> 1.1)
       kaminari (~> 1.2, >= 1.2.1)
       searchlight (~> 4.1)
+    decidim-navigation_maps (1.2.0)
+      decidim-admin (>= 0.24, < 0.25)
+      decidim-core (>= 0.24, < 0.25)
     decidim-pages (0.24.2)
       decidim-core (= 0.24.2)
     decidim-participatory_processes (0.24.2)
@@ -582,6 +650,8 @@ GEM
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
+    origami (2.1.0)
+      colorize (~> 0.7)
     orm_adapter (0.5.0)
     paper_trail (10.3.1)
       activerecord (>= 4.2)
@@ -667,6 +737,11 @@ GEM
       activerecord (>= 5.0)
       activesupport (>= 5.0)
       i18n
+    ratonvirus (0.1.2)
+      activesupport (~> 5.0)
+    ratonvirus-clamby (0.1.0)
+      clamby (~> 1.6)
+      ratonvirus (~> 0.1.0)
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
@@ -677,6 +752,8 @@ GEM
       virtus (~> 1.0.5)
       wisper (>= 1.6.1)
     redcarpet (3.5.1)
+    redirector (1.1.7)
+      rails (>= 3.1)
     redis (4.2.5)
     regexp_parser (2.1.1)
     request_store (1.5.0)
@@ -822,6 +899,8 @@ GEM
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
+    virtus-multiparams (0.1.1)
+      virtus (~> 1.0)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (3.7.0)
@@ -837,6 +916,8 @@ GEM
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    wicked (1.3.4)
+      railties (>= 3.0.7)
     wicked_pdf (1.4.0)
       activesupport
     wisper (2.0.1)
@@ -856,8 +937,17 @@ DEPENDENCIES
   byebug (~> 11.0)
   dalli
   decidim (= 0.24.2)
+  decidim-antivirus!
+  decidim-conferences (= 0.24.2)
+  decidim-decidim_awesome (~> 0.7.2)
   decidim-dev (= 0.24.2)
+  decidim-initiatives (= 0.24.2)
+  decidim-jitsi_meetings!
+  decidim-navbar_links!
+  decidim-navigation_maps (~> 1.2.0)
   decidim-proposals (= 0.24.2)
+  decidim-term_customizer!
+  decidim-url_aliases!
   delayed_job_active_record
   execjs (= 2.7.0)
   faker (~> 1.9)

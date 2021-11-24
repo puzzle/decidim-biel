@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DecidimOCL
+module DecidimBiel
   module Assemblies
     # Modifications to make the /assemblies list more compact
     module AssemblyMCell

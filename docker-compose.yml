@@ -46,9 +46,9 @@ services:
   pg:
     image: postgres
     environment:
-      - POSTGRES_USER=decidim_ocl
+      - POSTGRES_USER=decidim_biel
       - POSTGRES_PASSWORD=7UhEIvi9wFymva3
-      - POSTGRES_DB=decidim_ocl_development
+      - POSTGRES_DB=decidim_biel_development
     ports:
       - 5432:5432
     volumes:

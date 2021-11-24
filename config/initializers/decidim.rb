@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Decidim.configure do |config|
-  config.application_name = 'DecidimOCL'
+  config.application_name = 'DecidimBiel'
   config.mailer_sender = 'info@puzzle.ch'
 
   # Change these lines to set your preferred locales
@@ -23,17 +23,17 @@ Decidim.configure do |config|
       },
       layers: {
         '0': {
-          name: ->(*_args) { I18n.t('decidim_ocl.maps.swisstopo.basic') },
+          name: ->(*_args) { I18n.t('decidim_biel.maps.swisstopo.basic') },
           type: :swisstopo,
-          layer: 'ch.swisstopo.pixelkarte-farbe',
+          layer: 'ch.swisstopo.pixelkarte-farbe'
         },
         '1': {
-          name: ->(*_args) { I18n.t('decidim_ocl.maps.swisstopo.satellite') },
+          name: ->(*_args) { I18n.t('decidim_biel.maps.swisstopo.satellite') },
           type: :swisstopo,
-          layer: 'ch.swisstopo.swissimage',
-        },
+          layer: 'ch.swisstopo.swissimage'
+        }
       },
-      attribution: ->(*_args) { I18n.t('decidim_ocl.maps.swisstopo.attribution') }
+      attribution: ->(*_args) { I18n.t('decidim_biel.maps.swisstopo.attribution') }
     },
     static: false,
     geocoding: {
@@ -104,7 +104,7 @@ Decidim.configure do |config|
   #   end
   # end
   #
-  config.sms_gateway_service = 'DecidimOCL::Verifications::Sms::AspsmsGateway'
+  config.sms_gateway_service = 'DecidimBiel::Verifications::Sms::AspsmsGateway'
 
   # Timestamp service configuration
   #

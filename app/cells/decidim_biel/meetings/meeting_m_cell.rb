@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module DecidimOCL
+module DecidimBiel
   module Meetings
     # Modifications to make the /meetings list more compact
     module MeetingMCell

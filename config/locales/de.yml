@@ -1000,7 +1000,7 @@ de:
     export_mailer:
       data_portability_export:
         click_button: 'Klicken Sie auf die Schaltfläche "Herunterladen". <br/> Sie haben die Datei bis %{date} verfügbar. <br/> Um die Datei zu öffnen, brauchen Sie <a href=''https://www.7-zip.org/''>7-Zip</a>. Password: %{password}'
-  decidim_ocl:
+  decidim_biel:
     surveys:
         survey_answered_mailer:
           answered:
@@ -1026,7 +1026,7 @@ de:
       confirmed: Deine E-Mail-Adresse wurde erfolgreich bestätigt.
     mailer:
       confirmation_instructions:
-        subject: "Open Community Luzern: E-Mail bestätigen"
+        subject: "Decidim Biel: E-Mail bestätigen"
       reset_password_instructions:
         action: Mein Passwort ändern
         greeting: Hallo %{recipient}!
