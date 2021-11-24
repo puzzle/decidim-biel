@@ -11,22 +11,22 @@ gem 'execjs', '2.7.0'
 gem 'decidim', DECIDIM_VERSION
 gem 'decidim-proposals', DECIDIM_VERSION
 # gem 'decidim-consultations', DECIDIM_VERSION
-gem 'decidim-antivirus',
-    git: 'https://github.com/mainio/decidim-module-antivirus'
-gem 'decidim-conferences', DECIDIM_VERSION
-gem 'decidim-decidim_awesome', '~> 0.7.2'
-gem 'decidim-initiatives', DECIDIM_VERSION
-gem 'decidim-jitsi_meetings',
-    git: 'https://github.com/puzzle/decidim-module-jitsi-meetings',
-    tag: DECIDIM_VERSION
-gem 'decidim-navbar_links',
-    git: 'https://github.com/puzzle/decidim-module-navbar_links',
-    tag: "v#{DECIDIM_VERSION}"
-gem 'decidim-navigation_maps', '~> 1.2.0'
-gem 'decidim-term_customizer',
-    git: 'https://github.com/mainio/decidim-module-term_customizer'
-gem 'decidim-url_aliases',
-    git: 'https://github.com/OpenSourcePolitics/decidim-urlaliases'
+# gem 'decidim-antivirus',
+#     git: 'https://github.com/mainio/decidim-module-antivirus'
+# gem 'decidim-conferences', DECIDIM_VERSION
+# gem 'decidim-decidim_awesome', '~> 0.7.2'
+# gem 'decidim-initiatives', DECIDIM_VERSION
+# gem 'decidim-jitsi_meetings',
+#     git: 'https://github.com/puzzle/decidim-module-jitsi-meetings',
+#     tag: DECIDIM_VERSION
+# gem 'decidim-navbar_links',
+#     git: 'https://github.com/puzzle/decidim-module-navbar_links',
+#     tag: "v#{DECIDIM_VERSION}"
+# gem 'decidim-navigation_maps', '~> 1.2.0'
+# gem 'decidim-term_customizer',
+#     git: 'https://github.com/mainio/decidim-module-term_customizer'
+# gem 'decidim-url_aliases',
+#     git: 'https://github.com/OpenSourcePolitics/decidim-urlaliases'
 
 gem 'bootsnap', '~> 1.3'
 gem 'dalli'
