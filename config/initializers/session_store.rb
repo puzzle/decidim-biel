@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # Be sure to restart your server when you modify this file.
-require 'action_dispatch/middleware/session/dalli_store'
 
 Rails.application.config.session_store(
   ActionDispatch::Session::CacheStore,
@@ -14,7 +13,7 @@ Rails.application.config.session_store(
 )
 
 def dalli_reachable?
-  Rails.cache.dalli.stats.values.any?
+  Rails.cache.stats.values.any?
 end
 
 def memcache_configured?
