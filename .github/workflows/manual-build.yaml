@@ -1,0 +1,12 @@
+
+name: 'Manual build without tests'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/reusable-build.yaml
+    secrets:
+      username: ${{ secrets.PUZZLE_REGISTRY_USERNAME }}
+      password: ${{ secrets.PUZZLE_REGISTRY_TOKEN }}

@@ -1,0 +1,21 @@
+name: 'Lint, test and image build on push'
+
+on:
+  push:
+    branches:
+      - 'master'
+    paths-ignore:
+      - 'doc/**'
+      - '**.md'
+
+jobs:
+  lint:
+    uses: ./.github/workflows/reusable-lint.yaml
+  test:
+    uses: ./.github/workflows/reusable-tests.yaml
+  build:
+    needs: [lint, test]
+    uses: ./.github/workflows/reusable-build.yaml
+    secrets:
+      PUZZLE_REGISTRY_USERNAME: ${{ secrets.PUZZLE_REGISTRY_USERNAME }}
+      PUZZLE_REGISTRY_TOKEN: ${{ secrets.PUZZLE_REGISTRY_TOKEN }}

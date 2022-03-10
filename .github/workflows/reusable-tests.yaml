@@ -1,22 +1,11 @@
 ---
-name: 'Rails Unit Tests'
+name: 'Reusable: Rails Unit Tests'
 
-"on":
-  push:
-    branches:
-      - 'master'
-    paths-ignore:
-      - 'doc/**'
-      - '**.md'
-  pull_request:
-    branches:
-      - 'master'
-    paths-ignore:
-      - 'doc/**'
-      - '**.md'
+on:
+  workflow_call:
 
 jobs:
-  build:
+  test:
     runs-on: 'ubuntu-latest'
 
     strategy:
