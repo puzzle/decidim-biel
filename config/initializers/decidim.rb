@@ -12,25 +12,25 @@ Decidim.configure do |config|
     dynamic: {
       provider: :gis_luzern,
       default_center: {
-        lat: 47.052,
-        lng: 8.309
+        lat: 47.13465,
+        lng: 7.24411
       },
       map_limits: {
-        lat_min: 47.016,
-        lat_max: 47.095,
-        lng_min: 8.18,
-        lng_max: 8.373
+        lat_min: 47.11237,
+        lat_max: 47.16544,
+        lng_min: 7.20428,
+        lng_max: 7.31157
       },
       layers: {
         '0': {
-          name: ->(*_args) { I18n.t('decidim_biel.maps.swisstopo.basic') },
-          type: :swisstopo,
-          layer: 'ch.swisstopo.pixelkarte-farbe'
-        },
-        '1': {
           name: ->(*_args) { I18n.t('decidim_biel.maps.swisstopo.satellite') },
           type: :swisstopo,
           layer: 'ch.swisstopo.swissimage'
+        },
+        '1': {
+          name: ->(*_args) { I18n.t('decidim_biel.maps.swisstopo.basic') },
+          type: :swisstopo,
+          layer: 'ch.swisstopo.pixelkarte-farbe'
         }
       },
       attribution: ->(*_args) { I18n.t('decidim_biel.maps.swisstopo.attribution') }
@@ -43,7 +43,7 @@ Decidim.configure do |config|
     },
     autocomplete: {
       provider: :osm,
-      url: 'https://photon.komoot.io/api?lat=47.052&lon=8.309&bbox=8.18,47.016,8.373,47.095',
+      url: 'https://photon.komoot.io/api?lat=47.135&lon=7.244&bbox=7.204,47.112,7.311,47.165',
       address_format: [
         'name',
         %w[street housenumber],
