@@ -63,5 +63,5 @@ ENV LANG=C.UTF-8 \
   BUNDLE_JOBS=20 \
   BUNDLE_RETRY=5 \
   PATH=${APP_HOME}/bin:${PATH}
-RUN gem install bundler:2.2.27
+RUN gem install bundler -v '~> 2.2'
 RUN bundle install
