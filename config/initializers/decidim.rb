@@ -23,14 +23,14 @@ Decidim.configure do |config|
       },
       layers: {
         '0': {
+            name: ->(*_args) { I18n.t('decidim_biel.maps.swisstopo.basic') },
+            type: :swisstopo,
+            layer: 'ch.swisstopo.pixelkarte-farbe'
+        },
+        '1': {
           name: ->(*_args) { I18n.t('decidim_biel.maps.swisstopo.satellite') },
           type: :swisstopo,
           layer: 'ch.swisstopo.swissimage'
-        },
-        '1': {
-          name: ->(*_args) { I18n.t('decidim_biel.maps.swisstopo.basic') },
-          type: :swisstopo,
-          layer: 'ch.swisstopo.pixelkarte-farbe'
         }
       },
       attribution: ->(*_args) { I18n.t('decidim_biel.maps.swisstopo.attribution') }
