@@ -9,7 +9,7 @@
 #
 # Also we don't use -onbuild as they're deprecated
 # https://github.com/docker-library/official-images/issues/2076
-FROM ruby:2.7.1 as dev
+FROM ruby:2.7 as dev
 LABEL maintainer="beltrame@puzzle.ch"
 
 # Installs system dependencies
@@ -63,5 +63,5 @@ ENV LANG=C.UTF-8 \
   BUNDLE_JOBS=20 \
   BUNDLE_RETRY=5 \
   PATH=${APP_HOME}/bin:${PATH}
-RUN gem install bundler:2.2.5
+RUN gem install bundler:2.2.27
 RUN bundle install
