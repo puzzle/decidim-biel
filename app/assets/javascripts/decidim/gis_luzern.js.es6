@@ -85,7 +85,7 @@
           this.map.fitBounds(bounds, {padding: [100, 100], maxZoom: 19});
         } else {
           const bounds = new L.LatLngBounds(this.config.markers.map((markerData) => [markerData.latitude, markerData.longitude]));
-          this.map.fitBounds(bounds, {padding: [100, 100], maxZoom: 23});
+          this.map.fitBounds(bounds, {padding: [20, 20], maxZoom: 21});
         }
       }
     }
