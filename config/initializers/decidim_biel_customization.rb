@@ -2,7 +2,7 @@
 
 Decidim::DiffCell.include DecidimBiel::DiffCell
 Decidim::Proposals::ProposalMCell.include DecidimBiel::Proposals::ProposalMCell
-Decidim::Proposals::HighlightedProposalsCell.include DecidimBiel::Proposals::HighlightedProposalsCell
+Decidim::Proposals::HighlightedProposalsForComponentCell.prepend DecidimBiel::Proposals::HighlightedProposalsForComponentCell
 Decidim::ParticipatoryProcesses::ProcessMCell.include DecidimBiel::ParticipatoryProcesses::ProcessMCell
 Decidim::Proposals::Admin::ProposalNoteCreatedEvent.prepend DecidimBiel::Proposals::Admin::ProposalNoteCreatedEvent
 Decidim::Forms::AnswerQuestionnaire.prepend DecidimBiel::Forms::AnswerQuestionnaire
