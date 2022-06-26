@@ -12,7 +12,7 @@ Rails.application.config.session_store(
   same_site: :lax
 )
 
-def dalli_reachable?
+def cache_reachable?
   Rails.cache.stats.values.any?
 end
 
@@ -35,6 +35,6 @@ end
 if !skip_memcache_check &&
    memcache_configured? &&
    !Rails.env.production? &&
-   !dalli_reachable?
+   !cache_reachable?
   raise 'As CSRF tokens are read from cache, we require a memcache instance to start'
 end

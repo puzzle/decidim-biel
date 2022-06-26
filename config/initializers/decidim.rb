@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-Decidim.configure do |config|
+Decidim.register_assets_path File.expand_path('app/packs', Rails.application.root)
+Decidim.register_assets_path File.expand_path('app/packs/fonts', Rails.application.root)
+
+Decidim.configure do |config| # rubocop:disable Metrics/BlockLength
   config.application_name = 'DecidimBiel'
   config.mailer_sender = 'info@puzzle.ch'
 

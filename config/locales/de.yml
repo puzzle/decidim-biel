@@ -30,6 +30,25 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 de:
+  time:
+    formats:
+      day_of_month: "%d. %b"
+      day_of_week: "%a"
+      day_of_week_long: "%a %e"
+      day_of_year: "%d.%m.%y"
+      ddmm: "%d.%m."
+      ddmmyyyy: "%d.%m.%Y"
+      decidim_day_of_year: "%d %B %Y"
+      decidim_short: "%d.%m.%Y %H:%M"
+      default: "%a, %d.%b.%Y %H:%M:%S %z"
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%d.%B.%Y %I:%M %p"
+      long: "%d.%B.%Y %H:%M"
+      long_dashed: "%Y-%m-%d %H:%M:%S"
+      short: "%d.%m.%Y %H:%M"
+      time_of_day: "%H:%M"
   decidim_navbar_links:
     admin:
       menu:
@@ -96,11 +115,20 @@ de:
           attributes:
             attachment:
               needs_to_be_reattached: Der Anhang muss nochmals hinzugefügt werden.
+        user:
+          attributes:
+            textcaptcha_answer:
+              expired: "Die Sicherheitsfrage ist abgelaufen, bitte versuche es erneut."
+              incorrect: "Die Antwort ist leider nicht korrekt, bitte versuche es erneut."
     models:
       decidim/meetings/close_meeting_event: Event geschlossen
       decidim/meetings/create_meeting_event: Event
       decidim/meetings/upcoming_meeting_event: Kommender Event
   activerecord:
+    errors/models/decidim/attachment/attributes/file:
+      antivirus_virus_detected: 'enthält einen Virus'
+      antivirus_client_error: 'konnte nicht auf Viren geprüft werden'
+      antivirus_file_not_found: 'Die letzte Datei für den Virenscan wurde nicht gefunden'
     models:
       decidim/meetings/meeting:
         one: Event
@@ -157,6 +185,8 @@ de:
     calendar:
       menu:
         calendar: Kalender
+    accessibility:
+      front_page_link: Zur Startseite gehen
     account:
       delete:
         alert: Diese Aktion kann nicht rückgängig gemacht werden. Wenn du dein Konto löschst, kannst du dich mit diesem Konto nicht mehr anmelden und musst dich neu registrieren.
@@ -869,6 +899,9 @@ de:
           error: Beim Erstellen des neuen Administrators ist ein Fehler aufgetreten.
         edit:
           update: Bearbeiten
+      dashboard:
+        show:
+          current_organizations: Meine Organisationen anzeigen
       menu:
         dashboard: Dashboard
       models:
@@ -884,6 +917,9 @@ de:
             smtp_settings: SMTP Einstellungen
             omniauth_settings: Omniauth Einstellungen
       organizations:
+        advanced_settings:
+          hide: Verstecken
+          show: Anzeigen
         file_upload_settings:
           content_types:
             admin_hint: These MIME types are allowed for the admin section uploads. Admin users should be aware of the risks with uploading some document formats, so you can expect them to be more cautious with the file uploads.
@@ -972,7 +1008,7 @@ de:
             help_title: Hilfe
             title: Übersetzungsset
         translations:
-          edit: 
+          edit:
             title: Bearbeiten
             save: Speichern
           form:
@@ -1049,8 +1085,8 @@ de:
   errors:
     messages:
       antivirus_virus_detected: 'enthält einen Virus'
-      antivirus_client_error: 'kann nicht gescannt werden'
-      antivirus_file_not_found: 'wurde nicht gefunden'
+      antivirus_client_error: 'konnte nicht auf Viren geprüft werden'
+      antivirus_file_not_found: 'Die letzte Datei für den Virenscan wurde nicht gefunden'
       too_many_marks: enthält zu viele aufeinanderfolgende Satzzeichen (z.B. "!" und "?")
   hello: "Hallo Welt"
   layouts:

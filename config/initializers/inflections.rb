@@ -14,5 +14,5 @@
 
 # These inflection rules are supported but not enabled by default:
 ActiveSupport::Inflector.inflections do |inflect|
-  inflect.uncountable %w[decidim_biel biel decidimdiel]
+  inflect.uncountable %w[decidim_biel biel decidimbiel]
 end
