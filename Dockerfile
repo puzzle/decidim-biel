@@ -1,19 +1,46 @@
 ##################################################################
+#                            Variables                           #
+##################################################################
+
+# Packages
+ARG BUILD_PACKAGES="git libicu-dev libpq-dev nodejs npm"
+ARG RUN_PACKAGES="clamav clamav-daemon git graphicsmagick libicu-dev libpq5 nodejs poppler-utils"
+
+# Scripts
+ARG BUILD_SCRIPT="npm install -g npm && \
+    npm install -g yarn && \
+    yarn set version 1.22.10"
+ARG POST_BUILD_SCRIPT="bin/rails webpacker:compile"
+
+# Bundler specific
+ARG BUNDLE_APP_CONFIG="/app-src/.bundle/config"
+ARG BUNDLE_WITHOUT="development:metrics:test"
+ARG BUNDLER_VERSION="2.2.27"
+
+# Rails specific
+ARG SKIP_MEMCACHE_CHECK="true"
+ARG RAILS_ENV="production"
+ARG SECRET_KEY_BASE="thisneedstobeset"
+
+# Runtime ENV Vars
+ARG PS1='$SENTRY_CURRENT_ENV$ '
+ARG TZ="Europe/Zurich"
+
+##################################################################
 #                            Build Stage                         #
 ##################################################################
 
 FROM ruby:2.7 AS build
 
-ARG BUILD_PACKAGES="git libicu-dev libpq-dev nodejs npm"
-ARG BUILD_SCRIPT="npm install -g npm && \
-    npm install -g yarn && \
-    yarn set version 1.22.10"
-ARG BUNDLE_WITHOUT="development:metrics:test"
-ARG BUNDLER_VERSION="2.2.27"
-ARG POST_BUILD_SCRIPT="bin/rails assets:precompile"
-ARG SKIP_MEMCACHE_CHECK="true"
-ARG RAILS_ENV="production"
-ARG SECRET_KEY_BASE="thisneedstobeset"
+ARG BUILD_PACKAGES
+ARG BUILD_SCRIPT
+ARG BUNDLE_APP_CONFIG
+ARG BUNDLE_WITHOUT
+ARG BUNDLER_VERSION
+ARG POST_BUILD_SCRIPT
+ARG SKIP_MEMCACHE_CHECK
+ARG RAILS_ENV
+ARG SECRET_KEY_BASE
 
 # Set build shell
 SHELL ["/bin/bash", "-c"]
@@ -37,7 +64,9 @@ COPY ./Gemfile ./Gemfile.lock /app-src/
 WORKDIR /app-src
 
 # Run deployment
-RUN    bundle config set --local deployment 'true' \
+RUN    touch "$BUNDLE_APP_CONFIG" \
+    && chmod 777 "$BUNDLE_APP_CONFIG" \
+    && bundle config set --local deployment 'true' \
     && bundle config set --local without ${BUNDLE_WITHOUT} \
     && bundle package \
     && bundle install \
@@ -66,12 +95,15 @@ SHELL ["/bin/bash", "-c"]
 RUN adduser --disabled-password --uid 1001 --gid 0 --gecos "" --shell /bin/bash app
 # RUN adduser --disabled-password --uid 1002 --gid 0 --gecos "" clamav
 
-ARG BUNDLE_WITHOUT='development:metrics:test'
-ARG BUNDLER_VERSION="2.2.27"
-ARG RUN_PACKAGES="clamav clamav-daemon git graphicsmagick libicu-dev libpq5 nodejs poppler-utils"
-ARG PS1='$SENTRY_CURRENT_ENV$ '
+ARG BUNDLE_APP_CONFIG
+ARG BUNDLE_WITHOUT
+ARG BUNDLER_VERSION
+ARG RUN_PACKAGES
+ARG PS1
+ARG TZ
+
+# Runtime ENV Vars
 ENV PS1=$PS1
-ARG TZ="Europe/Zurich"
 ENV TZ=$TZ
 
 
