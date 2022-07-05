@@ -46,10 +46,11 @@ bin/bundle
 .envrc
 
 # Ignore local gems
-vendor/bundle/
+vendor/bundle
 
 /public/packs
 /public/packs-test
+/public/decidim-packs
 /node_modules
 /yarn-error.log
 yarn-debug.log*

@@ -4,7 +4,7 @@
     <div class="row">
       <div class="column medium-6">
         <div class="first-blog-post card">
-          <%= image_pack_tag blog_image_src(first_post) %>
+          <%= image_tag blog_image_src(first_post) %>
           <div class="first-blog-post-description">
             <%= link_to resource_locator(first_post).path do %>
               <span class="card__title"><%= translated_attribute first_post.title %></span>
@@ -18,7 +18,7 @@
       <div class="column medium-6 older-blog-posts">
         <% older_posts.each do |post| %>
           <div class="older-blog-post card">
-            <%= image_pack_tag blog_image_src(post) %>
+            <%= image_tag blog_image_src(post) %>
             <div class="older-blog-post-description">
               <%= link_to resource_locator(post).path do %>
                 <span class="card__title"><%= translated_attribute post.title %></span>

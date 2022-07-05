@@ -1,19 +1,37 @@
 GIT
-  remote: https://github.com/mainio/decidim-module-antivirus.git
-  revision: b5deb631f133a4de835787107d113de8d3c0dbe1
+  remote: https://github.com/Platoniq/decidim-module-decidim_awesome.git
+  revision: 658d226e9ed164ffdca2efbde4dfaf79b02c295e
   specs:
-    decidim-antivirus (0.26.0)
-      decidim-core (~> 0.26.0)
-      ratonvirus (~> 0.3.0)
-      ratonvirus-clamby (~> 0.3.0)
+    decidim-decidim_awesome (0.8.3)
+      decidim-admin (>= 0.25.0, < 0.27)
+      decidim-core (>= 0.25.0, < 0.27)
+      sassc (~> 2.3)
 
 GIT
   remote: https://github.com/mainio/decidim-module-term_customizer.git
   revision: 9540a2ab20b872896e51ea5f97c5ebae3388ca60
+  ref: release/0.26-stable
   specs:
     decidim-term_customizer (0.26.0)
       decidim-admin (~> 0.26.0)
       decidim-core (~> 0.26.0)
+
+GIT
+  remote: https://github.com/puzzle/decidim-module-antivirus.git
+  revision: 7f37a0832850c3f37983f9c6989c89c26bfc9a5b
+  specs:
+    decidim-antivirus (0.26.1)
+      decidim-core (~> 0.26.1)
+      ratonvirus (~> 0.3.0)
+      ratonvirus-clamby (~> 0.3.0)
+
+GIT
+  remote: https://github.com/puzzle/decidim-module-jitsi-meetings.git
+  revision: d76891ac2bad2759aed938abbf29bd47346eb70a
+  ref: 0.26.2
+  specs:
+    decidim-jitsi_meetings (0.26.2)
+      decidim-core (= 0.26.2)
 
 GEM
   remote: https://rubygems.org/
@@ -295,10 +313,6 @@ GEM
     decidim-debates (0.26.2)
       decidim-comments (= 0.26.2)
       decidim-core (= 0.26.2)
-    decidim-decidim_awesome (0.8.3)
-      decidim-admin (>= 0.25.0, < 0.27)
-      decidim-core (>= 0.25.0, < 0.27)
-      sassc (~> 2.3)
     decidim-dev (0.26.2)
       axe-core-rspec (~> 4.1.0)
       byebug (~> 11.0)
@@ -854,9 +868,10 @@ DEPENDENCIES
   decidim (= 0.26.2)
   decidim-antivirus!
   decidim-conferences (= 0.26.2)
-  decidim-decidim_awesome (~> 0.8.1)
+  decidim-decidim_awesome!
   decidim-dev (= 0.26.2)
   decidim-initiatives (= 0.26.2)
+  decidim-jitsi_meetings!
   decidim-proposals (= 0.26.2)
   decidim-term_customizer!
   delayed_job_active_record
@@ -874,6 +889,7 @@ DEPENDENCIES
   spring-watcher-listen
   uglifier
   web-console
+  webpacker
 
 RUBY VERSION
    ruby 2.7.6p219

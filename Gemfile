@@ -6,52 +6,51 @@ DECIDIM_VERSION = '0.26.2'
 
 ruby RUBY_VERSION
 
-gem 'execjs'
+gem 'execjs' # , '2.7.0'
 
 gem 'decidim', DECIDIM_VERSION
+gem 'decidim-conferences', DECIDIM_VERSION
+gem 'decidim-initiatives', DECIDIM_VERSION
 gem 'decidim-proposals', DECIDIM_VERSION
 # gem 'decidim-consultations', DECIDIM_VERSION
-gem 'decidim-conferences', DECIDIM_VERSION
-gem 'decidim-decidim_awesome', '~> 0.8.1'
-gem 'decidim-initiatives', DECIDIM_VERSION
 
-gem 'decidim-antivirus', github: 'mainio/decidim-module-antivirus'
-gem 'decidim-term_customizer', github: 'mainio/decidim-module-term_customizer'
+gem 'decidim-antivirus', github: 'puzzle/decidim-module-antivirus'
+gem 'decidim-decidim_awesome', github: 'Platoniq/decidim-module-decidim_awesome'
+gem 'decidim-term_customizer', github: 'mainio/decidim-module-term_customizer', ref: 'release/0.26-stable'
+gem 'decidim-jitsi_meetings', github: 'puzzle/decidim-module-jitsi-meetings', ref: DECIDIM_VERSION
 
-# gem 'decidim-jitsi_meetings', github: 'puzzle/decidim-module-jitsi-meetings', tag: DECIDIM_VERSION
+# TODO: These are not updated yet :(
 # gem 'decidim-navbar_links', github: 'puzzle/decidim-module-navbar_links', tag: "v#{DECIDIM_VERSION}"
 # gem 'decidim-navigation_maps', '~> 1.2.0'
 # gem 'decidim-url_aliases', github: 'OpenSourcePolitics/decidim-urlaliases'
 
 gem 'aws-sdk-s3', require: false
 gem 'binding_of_caller'
-gem 'bootsnap'
+gem 'bootsnap'                # , '~> 1.3'
+gem 'byebug'                  # , '~> 11.0', platform: :mri
 gem 'dalli'
 gem 'delayed_job_active_record'
-gem 'faker'
+gem 'faker'                   # , '~> 1.9'
 gem 'lograge'
 gem 'prometheus_exporter'
-gem 'byebug'
 gem 'pry-byebug'
 gem 'pry-rails'
 gem 'puma'
 gem 'sentry-raven'
-gem 'uglifier'
+gem 'uglifier'                # , '~> 4.1'
+gem 'webpacker'               # , "~> 6.0.rc.6"
 
 group :development, :test do
   gem 'better_errors'
-  gem 'binding_of_caller'
-  gem 'pry-byebug'
-
   gem 'decidim-dev', DECIDIM_VERSION
 end
 
 group :development do
-  gem 'letter_opener_web'
-  gem 'listen'
-  gem 'spring'
-  gem 'spring-watcher-listen'
-  gem 'web-console'
+  gem 'letter_opener_web'     # , '~> 1.3'
+  gem 'listen'                # , '~> 3.1'
+  gem 'spring'                # , '~> 2.0'
+  gem 'spring-watcher-listen' # , '~> 2.0'
+  gem 'web-console'           # , '~> 3.5'
 end
 
 group :production do

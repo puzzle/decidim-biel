@@ -6,11 +6,11 @@
       <%=  %>
       <% if member.user.present? %>
         <%= link_to (decidim.profile_url host: followable.organization.host, nickname: member.user.nickname), class: "author__avatar author__avatar-horizontal", title: member.user.nickname do %>
-          <%= image_pack_tag member.user.avatar_url(:big), alt: "member-avatar" %>
+          <%= image_tag member.user.avatar_url(:big), alt: "member-avatar" %>
         <% end %>
       <% else %>
         <span class="author__avatar" title="<%= member.full_name %>">
-          <%= image_pack_tag asset_path("decidim/default-avatar.svg"), alt: "member-avatar" %>
+          <%= image_pack_tag ("media/images/default-avatar.svg"), alt: "member-avatar" %>
         </span>
       <% end %>
     <% end %>
