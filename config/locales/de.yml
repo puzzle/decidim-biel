@@ -28,7 +28,6 @@
 #
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
-
 de:
   time:
     formats:
@@ -453,8 +452,7 @@ de:
     decidim_awesome:
       admin:
         config:
-          caution: 'NOTE: This feature heavily modifies some default behaviours that
-            might lead to unexpected results. Use it with caution!'
+          caution: 'NOTE: This feature heavily modifies some default behaviours that might lead to unexpected results. Use it with caution!'
           constraints:
             add_condition: Einschränkung hinzufügen
             always: Immer
@@ -470,20 +468,9 @@ de:
               allow_images_in_small_editor: Bilder in kleinem Editor erlauben
               drag_and_drop_supported: Drag and Drop unterstützen
               intergram_about: Über Intergram
-              proposal_custom_fields: Create custom proposal fields that applies only
-                in certain parts of the public web (use the restrictions editor for
-                that)
-              proposal_custom_fields_example: Data is stored in a XML object using
-                compatible HTML attributes (dl,dt,dd elements) replacing the "body"
-                in a normal proposal.
-              proposal_custom_fields_translations: "Labels, help text, placeholders
-                and default values can use your application custom translations. \nFor
-                that, instead of using a string literal, use the i18n key (it must
-                containt at least one dot).\nFor instance:\n- \"activemodel.attributes.proposal.title\"
-                instead of \"Title\"\n- \"activemodel.attributes.proposal.address\"
-                instead of \"Address\"\nOr use your own keys in combination with other
-                tools to define translations (eg: using the module Term Customizer):\n
-                - \"myapp.custom_fields.bio\" instead of \"Biography\""
+              proposal_custom_fields: Create custom proposal fields that applies only in certain parts of the public web (use the restrictions editor for that)
+              proposal_custom_fields_example: Data is stored in a XML object using compatible HTML attributes (dl,dt,dd elements) replacing the "body" in a normal proposal.
+              proposal_custom_fields_translations: "Labels, help text, placeholders and default values can use your application custom translations. \nFor that, instead of using a string literal, use the i18n key (it must containt at least one dot).\nFor instance:\n- \"activemodel.attributes.proposal.title\" instead of \"Title\"\n- \"activemodel.attributes.proposal.address\" instead of \"Address\"\nOr use your own keys in combination with other tools to define translations (eg: using the module Term Customizer):\n - \"myapp.custom_fields.bio\" instead of \"Biography\""
               use_markdown_editor: Markdown Editor benutzen
               intergram_config: Intergram Konfiguration
               allow_images_in_proposals: Bilder in Vorschlägen erlauben
@@ -725,11 +712,18 @@ de:
         filters:
           past: Vergangene Events
           upcoming: Kommende Events
+          type_values:
+            hybrid: Hybrid
         meeting_minutes:
           meeting_minutes: Protokolle
         show:
           join: Tritt dem Event bei
           view: Ansehen
+        index:
+          see_all_withdrawn: Alle anschauen
+          click_here: Hier klicken
+          text_banner: Veranstaltungen
+          see_all: Alle anschauen
       models:
         meeting:
           fields:
@@ -1038,11 +1032,11 @@ de:
         click_button: 'Klicken Sie auf die Schaltfläche "Herunterladen". <br/> Sie haben die Datei bis %{date} verfügbar. <br/> Um die Datei zu öffnen, brauchen Sie <a href=''https://www.7-zip.org/''>7-Zip</a>. Password: %{password}'
   decidim_biel:
     surveys:
-        survey_answered_mailer:
-          answered:
-            answered_survey: 'Jemand hat an der Umfrage "%{survey_name}" teilgenommen.'
-            subject: 'Neue Antwort auf Umfrage "%{survey_name}"'
-            view: 'Zur Umfrage'
+      survey_answered_mailer:
+        answered:
+          answered_survey: 'Jemand hat an der Umfrage "%{survey_name}" teilgenommen.'
+          subject: 'Neue Antwort auf Umfrage "%{survey_name}"'
+          view: 'Zur Umfrage'
     maps:
       gis_lu:
         attribution: '<a href="https://www.gis.stadtluzern.ch/" target="_blank">GIS LU</a>'
