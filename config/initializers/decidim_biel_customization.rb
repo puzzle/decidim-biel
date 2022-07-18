@@ -11,10 +11,7 @@ includes = [
 prepends = [
   [Decidim::Proposals::Admin::ProposalNoteCreatedEvent, DecidimBiel::Proposals::Admin::ProposalNoteCreatedEvent],
   [Decidim::Forms::AnswerQuestionnaire, DecidimBiel::Forms::AnswerQuestionnaire],
-  [Decidim::Assemblies::AssemblyMCell, DecidimBiel::Assemblies::AssemblyMCell],
-  [Decidim::Meetings::MeetingMCell, DecidimBiel::Meetings::MeetingMCell],
-  [Decidim::Meetings::MeetingPresenter, DecidimBiel::Meetings::MeetingPresenter],
-  # [Decidim::Meetings::ContentBlocks::UpcomingEventsCell, DecidimBiel::Meetings::ContentBlocks::UpcomingEventsCell]
+  [Decidim::Meetings::ContentBlocks::UpcomingMeetingsCell, DecidimBiel::Meetings::ContentBlocks::UpcomingMeetingsCell]
 ].each { |base, addition| base.prepend addition }
 
 override_path = Pathname.new('app/overrides')
@@ -44,7 +41,7 @@ module Decidim
   module Map
     module Provider
       module DynamicMap
-        autoload :GisLuzern, 'decidim/map/provider/dynamic_map/gis_luzern'
+        autoload :GisLuzern, 'decidim/map/provider/dynamic_map/swisstopo'
       end
     end
   end

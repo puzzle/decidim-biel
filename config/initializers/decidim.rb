@@ -13,7 +13,7 @@ Decidim.configure do |config| # rubocop:disable Metrics/BlockLength
 
   config.maps = {
     dynamic: {
-      provider: :gis_luzern,
+      provider: :swisstopo,
       default_center: {
         lat: 47.13465,
         lng: 7.24411

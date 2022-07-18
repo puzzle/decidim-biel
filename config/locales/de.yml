@@ -28,6 +28,7 @@
 #
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
+
 de:
   time:
     formats:
@@ -78,8 +79,6 @@ de:
       dummy_resource:
         end_date: Ende
         start_date: Beginn
-      initiative:
-        state: Status
       meeting:
         private_meeting: Privater Event
       mobile_phone:
@@ -135,6 +134,8 @@ de:
         one: Kollaborativer Entwurf
         other: Kollaborative Entwürfe
   decidim:
+    accessibility:
+      front_page_link: Zur Startseite
     navigation_maps:
       admin:
         areas:
@@ -184,8 +185,6 @@ de:
     calendar:
       menu:
         calendar: Kalender
-    accessibility:
-      front_page_link: Zur Startseite gehen
     account:
       delete:
         alert: Diese Aktion kann nicht rückgängig gemacht werden. Wenn du dein Konto löschst, kannst du dich mit diesem Konto nicht mehr anmelden und musst dich neu registrieren.
@@ -235,6 +234,8 @@ de:
         update:
           success: Anhang erfolgreich aktualisiert
       filters:
+        decidim_assemblies_type_id_eq:
+          label: Typ
         filter_label: Filter
         private_space_eq:
           label: Privat
@@ -271,22 +272,6 @@ de:
             label: Status
             values:
               true: Nicht beantwortet
-        initiatives:
-          decidim_area_id_eq:
-            label: Gebiet
-          state_eq:
-            label: Status
-            values:
-              accepted: Genügend Unterschriften
-              created: Erstellt
-              discarded: Verworfen
-              published: Veröffentlicht
-              rejected: Nicht genügend Unterschriften
-              validating: Technische Abklärung
-          type_id_eq:
-            label: Typ
-      initiative:
-        attachments: Anhänge
       menu:
         assemblies_submenu:
           attachments: Anhänge
@@ -296,13 +281,6 @@ de:
         participatory_processes_submenu:
           attachments: Anhänge
       models:
-        initiatives:
-          fields:
-            state: Status
-        initiatives_votes:
-          fields:
-            initiative_end_date: Ende
-            initiative_start_date: Beginn
         participatory_process_step:
           fields:
             end_date: Ende
@@ -452,7 +430,8 @@ de:
     decidim_awesome:
       admin:
         config:
-          caution: 'NOTE: This feature heavily modifies some default behaviours that might lead to unexpected results. Use it with caution!'
+          caution: 'NOTE: This feature heavily modifies some default behaviours that
+            might lead to unexpected results. Use it with caution!'
           constraints:
             add_condition: Einschränkung hinzufügen
             always: Immer
@@ -468,9 +447,20 @@ de:
               allow_images_in_small_editor: Bilder in kleinem Editor erlauben
               drag_and_drop_supported: Drag and Drop unterstützen
               intergram_about: Über Intergram
-              proposal_custom_fields: Create custom proposal fields that applies only in certain parts of the public web (use the restrictions editor for that)
-              proposal_custom_fields_example: Data is stored in a XML object using compatible HTML attributes (dl,dt,dd elements) replacing the "body" in a normal proposal.
-              proposal_custom_fields_translations: "Labels, help text, placeholders and default values can use your application custom translations. \nFor that, instead of using a string literal, use the i18n key (it must containt at least one dot).\nFor instance:\n- \"activemodel.attributes.proposal.title\" instead of \"Title\"\n- \"activemodel.attributes.proposal.address\" instead of \"Address\"\nOr use your own keys in combination with other tools to define translations (eg: using the module Term Customizer):\n - \"myapp.custom_fields.bio\" instead of \"Biography\""
+              proposal_custom_fields: Create custom proposal fields that applies only
+                in certain parts of the public web (use the restrictions editor for
+                that)
+              proposal_custom_fields_example: Data is stored in a XML object using
+                compatible HTML attributes (dl,dt,dd elements) replacing the "body"
+                in a normal proposal.
+              proposal_custom_fields_translations: "Labels, help text, placeholders
+                and default values can use your application custom translations. \nFor
+                that, instead of using a string literal, use the i18n key (it must
+                containt at least one dot).\nFor instance:\n- \"activemodel.attributes.proposal.title\"
+                instead of \"Title\"\n- \"activemodel.attributes.proposal.address\"
+                instead of \"Address\"\nOr use your own keys in combination with other
+                tools to define translations (eg: using the module Term Customizer):\n
+                - \"myapp.custom_fields.bio\" instead of \"Biography\""
               use_markdown_editor: Markdown Editor benutzen
               intergram_config: Intergram Konfiguration
               allow_images_in_proposals: Bilder in Vorschlägen erlauben
@@ -554,6 +544,9 @@ de:
           username_help: Öffentlich sichtbarer Name, der in deinen Beiträgen angezeigt wird. Wenn du lieber anonym bleibst, kannst du auch einen Namen erfinden.
       registrations:
         new:
+          captcha_legend: Sicherheitsfrage
+          captcha_instructions: Bitte beantworte die folgende Frage, um zu beweisen dass du ein Mensch bist.
+          textcaptcha_answer: Antwort
           already_have_an_account?: Du hast bereits ein Konto?
           newsletter: Ich möchte gelegentlich per Newsletter über Neuigkeiten informiert werden.
           newsletter_title: Kontakterlaubnis
@@ -566,8 +559,7 @@ de:
         newsletter_modal:
           buttons:
             check: Kontakterlaubnis erteilen und fortfahren
-            unckeck: Ohne Kontakterlaubnis fortfahren
-            uncheck: Deaktivieren Sie das Kontrollkästchen
+            uncheck: Ohne Kontakterlaubnis fortfahren
           notice: |-
             <p>Hey, bist du sicher, dass du keinen Newsletter erhalten möchtest?<br>
             Für uns ist es sehr wichtig, dass wir dich gelegentlich kontaktieren können, um dir wichtige Ankündigungen mitzuteilen - zum Beispiel, wenn wir grosses mit deinen Inputs vorhaben.</p>
@@ -651,15 +643,6 @@ de:
         participatory_processes:
           contextual: "<p>Ein <strong>Partizipationsprozess</strong> ist eine Folge von Partizipations-Aktivitäten (z.B. zuerst eine Umfrage ausfüllen, dann Vorschläge machen, diese face-to-face oder in virtuellen Events diskutieren, und sie schliesslich priorisieren) mit dem Ziel, ein bestimmtes Thema zu definieren und darüber zu entscheiden.</p> <p>Beispiele für partizipative Prozesse sind: ein Verfahren zur Wahl von Ausschussmitgliedern (bei dem die Kandidaturen zuerst präsentiert, anschliessend debattiert und schliesslich eine Kandidatur ausgewählt wird), die Bürgerhaushalte (bei denen Vorschläge gemacht, wirtschaftlich bewertet und mit dem verfügbaren Geld abgestimmt werden), ein strategischer Planungsprozess, die gemeinschaftliche Ausarbeitung einer Vorschrift oder Norm, die Gestaltung eines städtischen Raums oder die Erstellung eines öffentlichen Planes.</p>\n"
           page: "<p>Ein <strong>Partizipationsprozess</strong> ist eine Folge von Partizipations-Aktivitäten (z.B. zuerst eine Umfrage ausfüllen, dann Vorschläge machen, diese face-to-face oder in virtuellen Events diskutieren, und sie schliesslich priorisieren) mit dem Ziel, ein bestimmtes Thema zu definieren und darüber zu entscheiden.</p> <p>Beispiele für partizipative Prozesse sind: ein Verfahren zur Wahl von Ausschussmitgliedern (bei dem die Kandidaturen zuerst präsentiert, anschliessend debattiert und schliesslich eine Kandidatur ausgewählt wird), die Bürgerhaushalte (bei denen Vorschläge gemacht, wirtschaftlich bewertet und mit dem verfügbaren Geld abgestimmt werden), ein strategischer Planungsprozess, die gemeinschaftliche Ausarbeitung einer Vorschrift oder Norm, die Gestaltung eines städtischen Raums oder die Erstellung eines öffentlichen Planes.</p>\n"
-    initiatives:
-      admin:
-        answers:
-          info_initiative:
-            state: Status
-      initiatives:
-        filters:
-          open: Offen
-          state: Status
     meetings:
       actions:
         attachments: Anhänge
@@ -709,6 +692,13 @@ de:
       last_activity:
         new_meeting_at_html: "<span>Neuer Event unter %{link}</span>"
       meetings:
+        calendar_modal:
+          add_to_calendar: Zum Kalender hinzufügen
+          apple: Zu Apple Kalender hinzufügen
+          close_window: Fenster schliessen
+          full_details_html: Details siehe %{link}
+          google: Zu Google Kalender hinzufügen
+          outlook: Zu Outlook Kalender hinzufügen
         filters:
           past: Vergangene Events
           upcoming: Kommende Events
@@ -1030,7 +1020,7 @@ de:
     export_mailer:
       data_portability_export:
         click_button: 'Klicken Sie auf die Schaltfläche "Herunterladen". <br/> Sie haben die Datei bis %{date} verfügbar. <br/> Um die Datei zu öffnen, brauchen Sie <a href=''https://www.7-zip.org/''>7-Zip</a>. Password: %{password}'
-  decidim_biel:
+  decidim_ocl:
     surveys:
       survey_answered_mailer:
         answered:
@@ -1056,7 +1046,7 @@ de:
       confirmed: Deine E-Mail-Adresse wurde erfolgreich bestätigt.
     mailer:
       confirmation_instructions:
-        subject: "Decidim Biel: E-Mail bestätigen"
+        subject: "Open Community Luzern: E-Mail bestätigen"
       reset_password_instructions:
         action: Mein Passwort ändern
         greeting: Hallo %{recipient}!

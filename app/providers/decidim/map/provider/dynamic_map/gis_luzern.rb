@@ -4,7 +4,7 @@ module Decidim
   module Map
     module Provider
       module DynamicMap
-        class GisLuzern < ::Decidim::Map::DynamicMap
+        class Swisstopo < ::Decidim::Map::DynamicMap
           def builder_options
             configuration.merge(super)
           end
@@ -14,7 +14,10 @@ module Decidim
           class Builder < Decidim::Map::DynamicMap::Builder
             # @see Decidim::Map::DynamicMap::Builder#javascript_snippets
             def javascript_snippets
-              template.javascript_pack_tag('decidim/gis_luzern')
+              [
+                  template.javascript_pack_tag("decidim/swisstopo"),
+                  template.javascript_pack_tag("decidim_proposals")
+              ].join
             end
           end
         end

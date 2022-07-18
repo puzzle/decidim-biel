@@ -10,7 +10,6 @@ gem 'execjs' # , '2.7.0'
 
 gem 'decidim', DECIDIM_VERSION
 gem 'decidim-conferences', DECIDIM_VERSION
-gem 'decidim-initiatives', DECIDIM_VERSION
 gem 'decidim-proposals', DECIDIM_VERSION
 # gem 'decidim-consultations', DECIDIM_VERSION
 
