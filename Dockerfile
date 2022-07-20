@@ -33,7 +33,7 @@ ARG SECRET_KEY_BASE="thisneedstobeset"
 ARG CUSTOMIZATION_OUTPUT="false"
 
 # Runtime ENV Vars
-ARG PS1='$SENTRY_CURRENT_ENV$ '
+ARG PS1='$SENTRY_CURRENT_ENV> '
 ARG TZ="Europe/Zurich"
 
 ##################################################################
