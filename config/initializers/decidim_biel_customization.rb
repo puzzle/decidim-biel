@@ -1,15 +1,32 @@
 # frozen_string_literal: true
 
-Decidim::DiffCell.include DecidimBiel::DiffCell
-Decidim::Proposals::ProposalMCell.include DecidimBiel::Proposals::ProposalMCell
-Decidim::Proposals::HighlightedProposalsForComponentCell.prepend DecidimBiel::Proposals::HighlightedProposalsForComponentCell
-Decidim::ParticipatoryProcesses::ProcessMCell.include DecidimBiel::ParticipatoryProcesses::ProcessMCell
-Decidim::Proposals::Admin::ProposalNoteCreatedEvent.prepend DecidimBiel::Proposals::Admin::ProposalNoteCreatedEvent
-Decidim::Forms::AnswerQuestionnaire.prepend DecidimBiel::Forms::AnswerQuestionnaire
-Decidim::Assemblies::AssemblyMCell.prepend DecidimBiel::Assemblies::AssemblyMCell
-Decidim::Meetings::MeetingMCell.prepend DecidimBiel::Meetings::MeetingMCell
-Decidim::Meetings::MeetingPresenter.prepend DecidimBiel::Meetings::MeetingPresenter
-Decidim::Meetings::ContentBlocks::UpcomingEventsCell.prepend DecidimBiel::Meetings::ContentBlocks::UpcomingEventsCell
+require_relative '../../lib/customization_output'
+
+includes = [
+  [Decidim::DiffCell, DecidimBiel::DiffCell],
+  [Decidim::Proposals::ProposalMCell, DecidimBiel::Proposals::ProposalMCell],
+  [Decidim::ParticipatoryProcesses::ProcessMCell, DecidimBiel::ParticipatoryProcesses::ProcessMCell]
+].each { |base, addition| base.include addition }
+
+prepends = [
+  [Decidim::Proposals::Admin::ProposalNoteCreatedEvent, DecidimBiel::Proposals::Admin::ProposalNoteCreatedEvent],
+  [Decidim::Forms::AnswerQuestionnaire, DecidimBiel::Forms::AnswerQuestionnaire],
+  [Decidim::Meetings::ContentBlocks::UpcomingMeetingsCell, DecidimBiel::Meetings::ContentBlocks::UpcomingMeetingsCell]
+].each { |base, addition| base.prepend addition }
+
+override_path = Pathname.new('app/overrides')
+Rails.autoloaders.main.ignore(override_path)
+
+overrides = override_path.glob('**/*_override.rb')
+Rails.application.config.after_initialize do
+  overrides.each do |override|
+    load override.expand_path.to_s
+  end
+end
+
+CustomizationOutput.puts_and_log(includes: includes, prepends: prepends, overrides: overrides)
+
+# v Specially handled things (here be dragons) v
 
 # Setup a controller hook to setup the sms gateway before the
 # request is processed. This is done through a notification to
@@ -23,7 +40,7 @@ module Decidim
   module Map
     module Provider
       module DynamicMap
-        autoload :GisLuzern, 'decidim/map/provider/dynamic_map/gis_luzern'
+        autoload :GisLuzern, 'decidim/map/provider/dynamic_map/swisstopo'
       end
     end
   end

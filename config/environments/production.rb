@@ -24,15 +24,6 @@ Rails.application.configure do
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
-  # Compress JavaScripts and CSS.
-  config.assets.js_compressor = Uglifier.new(harmony: true)
-  # config.assets.css_compressor = :sass
-
-  # Do not fallback to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = false
-
-  # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
-
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = 'http://assets.example.com'
 
@@ -41,7 +32,7 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
-  config.active_storage.service = :local
+  config.active_storage.service = ENV['ACTIVE_STORAGE_SERVICE']&.to_sym || :ocp4_s3
 
   # Mount Action Cable outside main process or domain
   # config.action_cable.mount_path = nil
@@ -59,11 +50,6 @@ Rails.application.configure do
   memcached_host = ENV['RAILS_MEMCACHED_HOST'] || 'localhost'
   memcached_port = ENV['RAILS_MEMCACHED_PORT'] || '11211'
   config.cache_store = :mem_cache_store, "#{memcached_host}:#{memcached_port}"
-
-  # Silence the cache store, the decidim-term_customizer module doesn't work otherwise
-  config.after_initialize do
-    # Rails.cache.logger.level = Logger::INFO
-  end
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   config.active_job.queue_adapter     = :delayed_job

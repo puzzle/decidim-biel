@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.6'
 services:
   app: &app
     build:
@@ -22,6 +22,7 @@ services:
       - RAILS_ENV=development
       - RAILS_MEMCACHED_HOST=cache
       - RAILS_MAIL_DELIVERY_CONFIG=address:mail,port:1025
+      #- RAILS_DB_NAME=decidim_biel_production
     ports:
       - 3000:3000
     command: bundle exec puma
@@ -38,18 +39,18 @@ services:
       - 5432:5432
     volumes:
       - pg-data:/var/lib/postgresql/data
+      #- ./.docker/00-prepare-for-prod-dump.sql:/docker-entrypoint-initdb.d/00-prepare-for-prod-dump.sql
+      #- ./.docker/database-init.sql:/docker-entrypoint-initdb.d/database-init.sql
   cache:
     image: memcached:1.5-alpine
     command: [ memcached, -l, '0.0.0.0', -p, '11211' ]
-
-  adminer:
-    image: adminer
+  webpack:
+    <<: *app
+    depends_on: []
     ports:
-      - '8080:8080'
-    links:
-      - pg:db
-    depends_on:
-      - pg
+      - 3035:3035
+    entrypoint: ./.docker/webpack-entrypoint.sh
+    command: [ 'bin/webpack-dev-server' ]
 
   mail:
     image: schickling/mailcatcher:latest
@@ -61,12 +62,6 @@ services:
     ports: []
     entrypoint: []
     command: [ rake, 'jobs:work' ]
-  ruby:
-    build:
-      context: .
-      dockerfile: ./.docker/Dockerfile
-      target: dev
-    command: []
 
 volumes:
   node_modules: {}
