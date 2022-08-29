@@ -22,7 +22,7 @@ ARG BUILD_SCRIPT="curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
 ARG POST_BUILD_SCRIPT="yarn && bundle exec rails assets:precompile"
 
 # Bundler specific
-ARG BUNDLE_APP_CONFIG="/app-src/.bundle/config"
+ARG BUNDLE_APP_CONFIG="/app-src/.bundle/"
 ARG BUNDLE_WITHOUT="development:metrics:test"
 ARG BUNDLER_VERSION="2.3.12"
 
@@ -75,9 +75,6 @@ COPY . /app-src
 WORKDIR /app-src
 
 # Run deployment
-#RUN    mkdir -p `dirname "${BUNDLE_APP_CONFIG}"` \ 
-    # && touch "${BUNDLE_APP_CONFIG}" \
-    # && chmod 777 "${BUNDLE_APP_CONFIG}" \
 RUN    bundle config set --local deployment 'true' \
     && bundle config set --local without ${BUNDLE_WITHOUT} \
     && bundle package \
@@ -166,9 +163,6 @@ ENV HOME=/app-src
 RUN gem install bundler:${BUNDLER_VERSION} --no-document
 
 # Use cached gems
-RUN    ls /app-src/.bundle/config
-RUN    stat /app-src/.bundle/config
-RUN    stat /app-src/.bundle/config/config
 RUN    bundle config set --local deployment 'true' \
     && bundle config set --local without ${BUNDLE_WITHOUT} \
     && bundle
