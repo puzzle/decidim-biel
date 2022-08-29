@@ -75,9 +75,10 @@ COPY . /app-src
 WORKDIR /app-src
 
 # Run deployment
-RUN    touch "$BUNDLE_APP_CONFIG" \
-    && chmod 777 "$BUNDLE_APP_CONFIG" \
-    && bundle config set --local deployment 'true' \
+#RUN    mkdir -p `dirname "${BUNDLE_APP_CONFIG}"` \ 
+    # && touch "${BUNDLE_APP_CONFIG}" \
+    # && chmod 777 "${BUNDLE_APP_CONFIG}" \
+RUN    bundle config set --local deployment 'true' \
     && bundle config set --local without ${BUNDLE_WITHOUT} \
     && bundle package \
     && bundle install \
@@ -165,6 +166,7 @@ ENV HOME=/app-src
 RUN gem install bundler:${BUNDLER_VERSION} --no-document
 
 # Use cached gems
+RUN    ls /app-src/.bundle/config
 RUN    bundle config set --local deployment 'true' \
     && bundle config set --local without ${BUNDLE_WITHOUT} \
     && bundle
