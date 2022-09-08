@@ -167,6 +167,8 @@ RUN gem install bundler:${BUNDLER_VERSION} --no-document
 
 # Use cached gems
 RUN    ls /app-src/.bundle/config
+RUN    stat /app-src/.bundle/config
+RUN    stat /app-src/.bundle/config/config
 RUN    bundle config set --local deployment 'true' \
     && bundle config set --local without ${BUNDLE_WITHOUT} \
     && bundle
