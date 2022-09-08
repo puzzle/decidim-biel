@@ -1,0 +1,28 @@
+
+name: 'Reusable: Build BOM for dependency tracker'
+
+on:
+  workflow_call:
+    secrets:
+      PUZZLE_DEP_TRACK_URL:
+        description: 'Needed for the dep track push'
+        required: false
+      PUZZLE_DEP_TRACK_TOKEN:
+        description: 'Needed for the dep track push'
+        required: false
+
+jobs:
+  build:
+    environment: deploy
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: generate-bom
+        run: |-
+          npm install -g @appthreat/cdxgen && \
+          mkdir ./reports && \
+          cdxgen -o ./reports/bom.xml -r ./ && \
+          cdxgen --server-url ${{ secrets.PUZZLE_DEP_TRACK_URL }} \
+                 --api-key ${{ secrets.PUZZLE_DEP_TRACK_TOKEN }} \
+                 --project-name ${{ github.repository }} \
+                 --project-version ${{ github.ref }} \
+                 --recurse ./
