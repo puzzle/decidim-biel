@@ -116,16 +116,16 @@ RUN    export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get upgrade -y \
     # Install libpaper1 seperately, because statx is broken on APPUiO build
-    && apt-get install -y ucf \
-    && apt-get download libpaper1 \
-    && dpkg --unpack libpaper1*.deb \
-    && rm /var/lib/dpkg/info/libpaper1\:amd64.postinst \
-    && dpkg --configure libpaper1 \
-    && apt-get install -yf \
-    && rm libpaper1*.deb \
+    # && apt-get install -y ucf \
+    # && apt-get download libpaper1 \
+    # && dpkg --unpack libpaper1*.deb \
+    # && rm /var/lib/dpkg/info/libpaper1\:amd64.postinst \
+    # && dpkg --configure libpaper1 \
+    # && apt-get install -yf \
+    # && rm libpaper1*.deb \
     # Install the Packages we need at runtime
     && apt-get -y install ${RUN_PACKAGES} \
-    vim-tiny curl \
+    vim libpaper1 curl \
     # HACK: Maybe move to different image... gives clamav the right to execute
     && usermod -a -G 0 clamav \
     # Clean up after ourselves
