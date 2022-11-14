@@ -10,6 +10,12 @@ on:
       PUZZLE_REGISTRY_TOKEN:
         description: 'Needed for the registry login'
         required: false
+      PUZZLE_DEP_TRACK_URL:
+        description: 'Needed for the dependency track push'
+        required: false
+      PUZZLE_DEP_TRACK_TOKEN:
+        description: 'Needed for the dependency track push'
+        required: false
 
 env:
   DECIDIM_IMAGE_REPO: 'registry.puzzle.ch/decidim/stbi-rails'

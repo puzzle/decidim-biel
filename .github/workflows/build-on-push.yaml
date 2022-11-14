@@ -19,9 +19,5 @@ jobs:
     secrets:
       PUZZLE_REGISTRY_USERNAME: ${{ secrets.PUZZLE_REGISTRY_USERNAME }}
       PUZZLE_REGISTRY_TOKEN: ${{ secrets.PUZZLE_REGISTRY_TOKEN }}
-  bom:
-    needs: build
-    uses: ./.github/workflows/reusable-boms.yaml
-    secrets:
       PUZZLE_DEP_TRACK_URL: ${{ secrets.PUZZLE_DEP_TRACK_URL}}
       PUZZLE_DEP_TRACK_TOKEN: ${{ secrets.PUZZLE_DEP_TRACK_TOKEN }}

@@ -2,35 +2,45 @@
 #                            Variables                           #
 ##################################################################
 
+# Versioning
+ARG BUNDLER_VERSION="2.3.12"
+ARG NODE_VERSION="16"
+ARG YARN_VERSION="1.22.10"
+
 # Packages
 ARG BUILD_PACKAGES="git libicu-dev libpq-dev nodejs npm"
 ARG RUN_PACKAGES="clamav clamav-daemon git graphicsmagick libicu-dev libpq5 nodejs poppler-utils"
 
 # Scripts
-ARG BUILD_SCRIPT="curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
-    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg -o /root/yarn-pubkey.gpg \
-    && apt-key add /root/yarn-pubkey.gpg \
-    && echo \"deb https://dl.yarnpkg.com/debian/ stable main\" > /etc/apt/sources.list.d/yarn.list \
-    && apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends nodejs \
-    && apt-get clean \
-    && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && truncate -s 0 /var/log/*log \
-    && npm install -g npm \
-    && npm install -g yarn \
-    && yarn set version 1.22.10"
+ARG BUILD_SCRIPT="\
+    curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - \
+ && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg -o /root/yarn-pubkey.gpg \
+ && apt-key add /root/yarn-pubkey.gpg \
+ && echo \"deb https://dl.yarnpkg.com/debian/ stable main\" > /etc/apt/sources.list.d/yarn.list \
+ && apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends nodejs \
+ && apt-get clean \
+ && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+ && truncate -s 0 /var/log/*log \
+ && npm install -g npm \
+ && npm install -g yarn \
+ && yarn set version ${YARN_VERSION} \
+"
 ARG POST_BUILD_SCRIPT="yarn && bundle exec rails assets:precompile"
 
 # Bundler specific
 ARG BUNDLE_APP_CONFIG="/app-src/.bundle/"
 ARG BUNDLE_WITHOUT="development:metrics:test"
-ARG BUNDLER_VERSION="2.3.12"
 
-# Rails specific
+# Rails specific (needs to be set during bundler runs)
 ARG SKIP_MEMCACHE_CHECK="true"
 ARG RAILS_ENV="production"
 ARG SECRET_KEY_BASE="thisneedstobeset"
 ARG CUSTOMIZATION_OUTPUT="false"
+
+# Send dependencies to dependency tracker
+ARG PUZZLE_DEP_TRACK_URL
+ARG PUZZLE_DEP_TRACK_TOKEN
 
 # Runtime ENV Vars
 ARG PS1='$SENTRY_CURRENT_ENV> '
@@ -44,13 +54,16 @@ FROM ruby:2.7 AS build
 
 ARG BUILD_PACKAGES
 ARG BUILD_SCRIPT
-ARG BUNDLE_APP_CONFIG
 ARG BUNDLE_WITHOUT
 ARG BUNDLER_VERSION
 ARG POST_BUILD_SCRIPT
+ARG SEND_DEPS
+ARG DEP_URL
+ARG DEP_TOKEN
 ARG SKIP_MEMCACHE_CHECK
 ARG RAILS_ENV
 ARG SECRET_KEY_BASE
+ARG CUSTOMIZATION_OUTPUT
 
 # Set build shell
 SHELL ["/bin/bash", "-c"]
@@ -83,6 +96,23 @@ RUN    bundle config set --local deployment 'true' \
 
 RUN [[ ${POST_BUILD_SCRIPT} ]] && bash -c "${POST_BUILD_SCRIPT}"
 
+RUN [[ ${PUZZLE_DEP_TRACK_TOKEN} ]] \
+ && curl https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.24.2/cyclonedx-linux-x64 -O /tmp/cyclonedx-cli \
+ && chmod a+x /tmp/cyclonedx-cli \
+ && /tmp/cyclonedx-cli \
+      add files \
+      --no-input \
+      --base-path=/app-src \
+      --output-file /app-src/sbom.json \
+      --output-format json \
+      --exclude /.git/** \
+ && curl \
+      -X POST \
+      -F 'sbom=@/app-src/sbom.json' \
+      -H "Authorization: Bearer ${DEP_TOKEN}" \
+      ${DEP_URL} \
+ && rm /tmp/cyclonedx-cli
+
 # TODO: Save artifacts
 
 RUN rm -rf vendor/cache/ .git
@@ -106,56 +136,54 @@ ARG BUNDLER_VERSION
 ARG RUN_PACKAGES
 ARG PS1
 ARG TZ
+ARG CUSTOMIZATION_OUTPUT
 
 # Runtime ENV Vars
 ENV PS1=$PS1
 ENV TZ=$TZ
 
 # Prepare apt-get
-RUN    export DEBIAN_FRONTEND=noninteractive \
-    && apt-get update \
-    && apt-get upgrade -y \
-    # Install libpaper1 seperately, because statx is broken on APPUiO build
-    # && apt-get install -y ucf \
-    # && apt-get download libpaper1 \
-    # && dpkg --unpack libpaper1*.deb \
-    # && rm /var/lib/dpkg/info/libpaper1\:amd64.postinst \
-    # && dpkg --configure libpaper1 \
-    # && apt-get install -yf \
-    # && rm libpaper1*.deb \
-    # Install the Packages we need at runtime
-    && apt-get -y install ${RUN_PACKAGES} \
-    vim libpaper1 curl \
-    # HACK: Maybe move to different image... gives clamav the right to execute
-    && usermod -a -G 0 clamav \
-    # Clean up after ourselves
-    && unset DEBIAN_FRONTEND
+RUN export DEBIAN_FRONTEND=noninteractive \
+ && apt-get update \
+ && apt-get upgrade -y \
+ # Install the Packages we need at runtime
+ && apt-get -y install ${RUN_PACKAGES} \
+ vim libpaper1 curl \
+ # HACK: Maybe move to different image... gives clamav the right to execute
+ && usermod -a -G 0 clamav \
+ # Clean up after ourselves
+ && unset DEBIAN_FRONTEND
 
 # Copy deployment ready source code from build
 COPY --from=build /app-src /app-src
 COPY docker/ /
 WORKDIR /app-src
 
-RUN    chgrp -R 0 /app-src \
-    && chmod -R u+w,g=u /app-src
-# HACK: Maybe move to different image... Set group permissions to app folder and help clamav to start
-RUN    mkdir /var/run/clamav \
-    && chown clamav /run/clamav \
-    && sed -i 's/^chown/# chown/' /etc/init.d/clamav-daemon \
-    && chgrp -R 0 /app-src \
-                  /var/log/clamav \
-                  /var/lib/clamav \
-                  /var/run/clamav \
-                  /run/clamav \
-    && chmod -R u+w,g=u /app-src \
-                        /var/log/clamav \
-                        /var/lib/clamav \
-                        /var/run/clamav \
-                        /run/clamav \
-                        /run/clamav \
-                        /opt/bin/start_clamd \
-    && freshclam
+RUN chgrp -R 0 /app-src \
+ && chmod -R u+w,g=u /app-src
 
+# HACK: Maybe move to different image...
+# Set group permissions to app folder and help clamav to start
+RUN mkdir /var/run/clamav \
+ && chown clamav /run/clamav \
+ && sed -i 's/^chown/# chown/' /etc/init.d/clamav-daemon \
+ && chgrp \
+      -R 0 \
+      /app-src \
+      /var/log/clamav \
+      /var/lib/clamav \
+      /var/run/clamav \
+      /run/clamav \
+ && chmod \
+      -R u+w,g=u \
+      /app-src \
+      /var/log/clamav \
+      /var/lib/clamav \
+      /var/run/clamav \
+      /run/clamav \
+      /run/clamav \
+      /opt/bin/start_clamd \
+ && freshclam
 
 ENV HOME=/app-src
 
@@ -163,9 +191,9 @@ ENV HOME=/app-src
 RUN gem install bundler:${BUNDLER_VERSION} --no-document
 
 # Use cached gems
-RUN    bundle config set --local deployment 'true' \
-    && bundle config set --local without ${BUNDLE_WITHOUT} \
-    && bundle
+RUN bundle config set --local deployment 'true' \
+ && bundle config set --local without ${BUNDLE_WITHOUT} \
+ && bundle
 
 USER 1001
 
