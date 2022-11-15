@@ -3,44 +3,62 @@
 ##################################################################
 
 # Versioning
-ARG BUNDLER_VERSION="2.3.12"
-ARG NODE_VERSION="16"
+ARG RUBY_VERSION="2.7"
+ARG BUNDLER_VERSION="2.3.25"
+ARG NODEJS_VERSION="16"
 ARG YARN_VERSION="1.22.10"
 
 # Packages
-ARG BUILD_PACKAGES="git libicu-dev libpq-dev nodejs npm"
-ARG RUN_PACKAGES="clamav clamav-daemon git graphicsmagick libicu-dev libpq5 nodejs poppler-utils"
+# ARG BUILD_PACKAGES="git libicu-dev libpq-dev nodejs npm"
+ARG BUILD_PACKAGES="nodejs build-essential"
+# ARG RUN_PACKAGES="clamav clamav-daemon git graphicsmagick libicu-dev libpq5 nodejs poppler-utils"
+ARG RUN_PACKAGES="clamav clamav-daemon nodejs"
 
 # Scripts
-ARG BUILD_SCRIPT="\
-    curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - \
- && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg -o /root/yarn-pubkey.gpg \
- && apt-key add /root/yarn-pubkey.gpg \
- && echo \"deb https://dl.yarnpkg.com/debian/ stable main\" > /etc/apt/sources.list.d/yarn.list \
- && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends nodejs \
- && apt-get clean \
- && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* /tmp/* /var/tmp/* \
- && truncate -s 0 /var/log/*log \
- && npm install -g npm \
- && npm install -g yarn \
- && yarn set version ${YARN_VERSION} \
-"
-ARG POST_BUILD_SCRIPT="yarn && bundle exec rails assets:precompile"
+ARG PRE_INSTALL_SCRIPT="curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION}.x -o /tmp/nodesource_setup.sh && bash /tmp/nodesource_setup.sh"
+ARG INSTALL_SCRIPT="node -v && npm -v && npm install -g yarn && yarn set version ${YARN_VERSION}"
+ARG PRE_BUILD_SCRIPT
+ARG BUILD_SCRIPT="yarn install && bundle exec rake assets:precompile"
+ARG POST_BUILD_SCRIPT="echo \"(built at: $(date '+%Y-%m-%d %H:%M:%S'))\" > /app-src/BUILD_INFO"
 
 # Bundler specific
-ARG BUNDLE_APP_CONFIG="/app-src/.bundle/"
 ARG BUNDLE_WITHOUT="development:metrics:test"
 
-# Rails specific (needs to be set during bundler runs)
-ARG SKIP_MEMCACHE_CHECK="true"
+# App specific
 ARG RAILS_ENV="production"
-ARG SECRET_KEY_BASE="thisneedstobeset"
-ARG CUSTOMIZATION_OUTPUT="false"
+ARG RACK_ENV="production"
+ARG NODE_ENV="production"
+ARG RAILS_HOST_NAME="unused.example.net"
+ARG SECRET_KEY_BASE="needs-to-be-set"
 
-# Send dependencies to dependency tracker
-ARG PUZZLE_DEP_TRACK_URL
+ARG CUSTOMIZATION_OUTPUT="false"
 ARG PUZZLE_DEP_TRACK_TOKEN
+ARG PUZZLE_DEP_TRACK_URL
+ARG SKIP_MEMCACHE_CHECK="true"
+
+# Github specific
+ARG GITHUB_SHA
+ARG GITHUB_REPOSITORY
+ARG GITHUB_REF_NAME
+ARG BUILD_COMMIT="$GITHUB_SHA"
+ARG BUILD_REPO="$GITHUB_REPOSITORY"
+ARG BUILD_REF="$GITHUB_REF_NAME"
+
+# # Gitlab specific
+# ARG CI_COMMIT_SHA
+# ARG CI_REPOSITORY_URL
+# ARG CI_COMMIT_REF_NAME
+# ARG BUILD_COMMIT="$CI_COMMIT_SHA"
+# ARG BUILD_REPO="$CI_REPOSITORY_URL"
+# ARG BUILD_REF="$CI_COMMIT_REF_NAME"
+
+# # Openshift specific
+# ARG OPENSHIFT_BUILD_COMMIT
+# ARG OPENSHIFT_BUILD_SOURCE
+# ARG OPENSHIFT_BUILD_REFERENCE
+# ARG BUILD_COMMIT="$OPENSHIFT_BUILD_COMMIT"
+# ARG BUILD_REPO="$OPENSHIFT_BUILD_SOURCE"
+# ARG BUILD_REF="$OPENSHIFT_BUILD_REFERENCE"
 
 # Runtime ENV Vars
 ARG PS1='$SENTRY_CURRENT_ENV> '
@@ -50,20 +68,29 @@ ARG TZ="Europe/Zurich"
 #                            Build Stage                         #
 ##################################################################
 
-FROM ruby:2.7 AS build
+FROM ruby:${RUBY_VERSION} AS build
 
+# arguments for steps
+ARG PRE_INSTALL_SCRIPT
 ARG BUILD_PACKAGES
-ARG BUILD_SCRIPT
-ARG BUNDLE_WITHOUT
+ARG INSTALL_SCRIPT
 ARG BUNDLER_VERSION
+ARG PRE_BUILD_SCRIPT
+ARG BUNDLE_WITHOUT
+ARG BUILD_SCRIPT
 ARG POST_BUILD_SCRIPT
-ARG SEND_DEPS
-ARG DEP_URL
-ARG DEP_TOKEN
-ARG SKIP_MEMCACHE_CHECK
-ARG RAILS_ENV
-ARG SECRET_KEY_BASE
+
+# arguments potentially used by steps
 ARG CUSTOMIZATION_OUTPUT
+ARG NODE_ENV
+ARG PUZZLE_DEP_TRACK_TOKEN
+ARG PUZZLE_DEP_TRACK_URL
+ARG RACK_ENV
+ARG RAILS_ENV
+ARG RAILS_HOST_NAME
+ARG SECRET_KEY_BASE
+ARG SKIP_MEMCACHE_CHECK
+ARG TZ
 
 # Set build shell
 SHELL ["/bin/bash", "-c"]
@@ -71,12 +98,15 @@ SHELL ["/bin/bash", "-c"]
 # Use root user
 USER root
 
-# Install packages needed at buildtime
-RUN    apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install -y ${BUILD_PACKAGES}
+RUN bash -vxc "${PRE_INSTALL_SCRIPT:-"echo 'no PRE_INSTALL_SCRIPT provided'"}"
 
-RUN [[ ${BUILD_SCRIPT} ]] && bash -c "${BUILD_SCRIPT}"
+# Install dependencies
+RUN export DEBIAN_FRONTEND=noninteractive \
+ && apt-get update \
+ && apt-get upgrade -y \
+ && apt-get install -y --no-install-recommends ${BUILD_PACKAGES}
+
+RUN bash -vxc "${INSTALL_SCRIPT:-"echo 'no INSTALL_SCRIPT provided'"}"
 
 # Install specific versions of dependencies
 RUN gem install bundler:${BUNDLER_VERSION} --no-document
@@ -87,78 +117,103 @@ RUN gem install bundler:${BUNDLER_VERSION} --no-document
 COPY . /app-src
 WORKDIR /app-src
 
-# Run deployment
-RUN    bundle config set --local deployment 'true' \
-    && bundle config set --local without ${BUNDLE_WITHOUT} \
-    && bundle package \
-    && bundle install \
-    && bundle clean
+RUN bash -vxc "${PRE_BUILD_SCRIPT:-"echo 'no PRE_BUILD_SCRIPT provided'"}"
 
-RUN [[ ${POST_BUILD_SCRIPT} ]] && bash -c "${POST_BUILD_SCRIPT}"
+# install gems and build the app
+RUN bundle config set --local deployment 'true' \
+ && bundle config set --local without ${BUNDLE_WITHOUT} \
+ && bundle package \
+ && bundle install \
+ && bundle clean
 
-RUN [[ ${PUZZLE_DEP_TRACK_TOKEN} ]] \
- && curl https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.24.2/cyclonedx-linux-x64 -O /tmp/cyclonedx-cli \
- && chmod a+x /tmp/cyclonedx-cli \
- && /tmp/cyclonedx-cli \
-      add files \
-      --no-input \
-      --base-path=/app-src \
-      --output-file /app-src/sbom.json \
-      --output-format json \
-      --exclude /.git/** \
- && curl \
-      -X POST \
-      -F 'sbom=@/app-src/sbom.json' \
-      -H "Authorization: Bearer ${DEP_TOKEN}" \
-      ${DEP_URL} \
- && rm /tmp/cyclonedx-cli
+RUN bash -vxc "${BUILD_SCRIPT:-"echo 'no BUILD_SCRIPT provided'"}"
+
+RUN bash -vxc "\
+  if [[ '${PUZZLE_DEP_TRACK_TOKEN}' ]]; then \
+       curl \
+       https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.24.2/cyclonedx-linux-x64 \
+       -O /tmp/cyclonedx-cli \
+    && chmod a+x /tmp/cyclonedx-cli \
+    && /tmp/cyclonedx-cli \
+         add files \
+         --no-input \
+         --base-path=/app-src \
+         --output-file /app-src/sbom.json \
+         --output-format json \
+         --exclude /.git/** \
+    && curl \
+         -X POST \
+         -F 'sbom=@/app-src/sbom.json' \
+         -H 'Authorization: Bearer ${DEP_TOKEN}' \
+         ${DEP_URL} \
+    && rm /tmp/cyclonedx-cli; \
+  fi \
+"
+
+RUN bash -vxc "${POST_BUILD_SCRIPT:-"echo 'no POST_BUILD_SCRIPT provided'"}"
 
 # TODO: Save artifacts
 
-RUN rm -rf vendor/cache/ .git
+RUN rm -rf vendor/cache/ .git spec/ node_modules/
+
 
 ##################################################################
 #                            Run Stage                           #
 ##################################################################
 
 # This image will be replaced by Openshift
-FROM ruby:2.7-slim AS app
+FROM ruby:${RUBY_VERSION}-slim AS app
 
 # Set runtime shell
 SHELL ["/bin/bash", "-c"]
 
 # Add user
-RUN adduser --disabled-password --uid 1001 --gid 0 --gecos "" --shell /bin/bash app
+RUN adduser --disabled-password --uid 1001 --gid 0 --gecos "" app
 
-ARG BUNDLE_APP_CONFIG
-ARG BUNDLE_WITHOUT
-ARG BUNDLER_VERSION
+# arguments for steps
 ARG RUN_PACKAGES
+ARG BUNDLER_VERSION
+ARG BUNDLE_WITHOUT
+
+# arguments potentially used by steps
+ARG NODE_ENV
+ARG RACK_ENV
+ARG RAILS_ENV
+
+# data persisted in the image
 ARG PS1
 ARG TZ
-ARG CUSTOMIZATION_OUTPUT
+ARG BUILD_COMMIT
+ARG BUILD_REPO
+ARG BUILD_REF
 
 # Runtime ENV Vars
-ENV PS1=$PS1
-ENV TZ=$TZ
+ENV PS1="${PS1}" \
+    TZ="${TZ}" \
+    BUILD_REPO="${BUILD_REPO}" \
+    BUILD_REF="${BUILD_REF}" \
+    BUILD_COMMIT="${BUILD_COMMIT}" \
+    NODE_ENV="${NODE_ENV}" \
+    RAILS_ENV="${RAILS_ENV}" \
+    RACK_ENV="${RACK_ENV}"
 
 # Prepare apt-get
 RUN export DEBIAN_FRONTEND=noninteractive \
  && apt-get update \
  && apt-get upgrade -y \
- # Install the Packages we need at runtime
- && apt-get -y install ${RUN_PACKAGES} \
- vim libpaper1 curl \
+ && apt-get install -y ${RUN_PACKAGES} vim curl less \
+ && apt-get clean \
+ && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+ && truncate -s 0 /var/log/*log \
  # HACK: Maybe move to different image... gives clamav the right to execute
- && usermod -a -G 0 clamav \
- # Clean up after ourselves
- && unset DEBIAN_FRONTEND
+ && usermod -a -G 0 clamav
 
 # Copy deployment ready source code from build
 COPY --from=build /app-src /app-src
 COPY docker/ /
 WORKDIR /app-src
 
+# Set group permissions to app folder
 RUN chgrp -R 0 /app-src \
  && chmod -R u+w,g=u /app-src
 
@@ -185,7 +240,9 @@ RUN mkdir /var/run/clamav \
       /opt/bin/start_clamd \
  && freshclam
 
-ENV HOME=/app-src
+# support bin-stubs
+ENV HOME=/app-src \
+    PATH=/app-src/bin:$PATH
 
 # Install specific versions of dependencies
 RUN gem install bundler:${BUNDLER_VERSION} --no-document
@@ -193,7 +250,7 @@ RUN gem install bundler:${BUNDLER_VERSION} --no-document
 # Use cached gems
 RUN bundle config set --local deployment 'true' \
  && bundle config set --local without ${BUNDLE_WITHOUT} \
- && bundle
+ && bundle install
 
 USER 1001
 
