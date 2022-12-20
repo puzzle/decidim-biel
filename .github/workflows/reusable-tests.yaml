@@ -14,7 +14,7 @@ jobs:
 
     services:
       postgres:
-        image: 'postgres:11'
+        image: 'postgres:11-alpine'
         env:
           POSTGRES_PASSWORD: 'postgres'
         ports: ['5432:5432']
@@ -29,10 +29,10 @@ jobs:
 
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 'Set up Ruby ${{ matrix.ruby }}'
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
 
@@ -41,7 +41,7 @@ jobs:
           sudo apt-get install libpq-dev
       - name: Cache gems
         id: cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: vendor/bundle
           key: ruby-${{ matrix.ruby }}-gem-${{ hashFiles('**/Gemfile.lock') }}
@@ -50,7 +50,6 @@ jobs:
 
       - name: 'Build and run tests'
         env:
-          RAILS_TEST_DB_NAME: 'postgres'
           RAILS_TEST_DB_USERNAME: 'postgres'
           RAILS_TEST_DB_PASSWORD: 'postgres'
           RAILS_ENV: 'test'
