@@ -7,12 +7,13 @@ ARG RUBY_VERSION="2.7"
 ARG BUNDLER_VERSION="2.3.25"
 ARG NODEJS_VERSION="16"
 ARG YARN_VERSION="1.22.10"
+ARG CYCLONEDX_CLI_VERSION="0.24.2"
 
 # Packages
 # ARG BUILD_PACKAGES="git libicu-dev libpq-dev nodejs npm"
 ARG BUILD_PACKAGES="nodejs build-essential"
 # ARG RUN_PACKAGES="clamav clamav-daemon git graphicsmagick libicu-dev libpq5 nodejs poppler-utils"
-ARG RUN_PACKAGES="clamav clamav-daemon nodejs"
+ARG RUN_PACKAGES="clamav clamav-daemon nodejs libpq5"
 
 # Scripts
 ARG PRE_INSTALL_SCRIPT="curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION}.x -o /tmp/nodesource_setup.sh && bash /tmp/nodesource_setup.sh"
@@ -81,7 +82,10 @@ ARG BUILD_SCRIPT
 ARG POST_BUILD_SCRIPT
 
 # arguments potentially used by steps
+ARG BUILD_COMMIT
+ARG BUILD_REPO
 ARG CUSTOMIZATION_OUTPUT
+ARG CYCLONEDX_CLI_VERSION
 ARG NODE_ENV
 ARG PUZZLE_DEP_TRACK_TOKEN
 ARG PUZZLE_DEP_TRACK_URL
@@ -129,26 +133,30 @@ RUN bundle config set --local deployment 'true' \
 RUN bash -vxc "${BUILD_SCRIPT:-"echo 'no BUILD_SCRIPT provided'"}"
 
 RUN bash -vxc "\
-  if [[ '${PUZZLE_DEP_TRACK_TOKEN}' ]]; then \
-       curl \
-       https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.24.2/cyclonedx-linux-x64 \
-       -O /tmp/cyclonedx-cli \
-    && chmod a+x /tmp/cyclonedx-cli \
-    && /tmp/cyclonedx-cli \
-         add files \
-         --no-input \
-         --base-path=/app-src \
-         --output-file /app-src/sbom.json \
-         --output-format json \
-         --exclude /.git/** \
-    && curl \
-         -X POST \
-         -F 'sbom=@/app-src/sbom.json' \
-         -H 'Authorization: Bearer ${DEP_TOKEN}' \
-         ${DEP_URL} \
-    && rm /tmp/cyclonedx-cli; \
-  fi \
-"
+if [[ -n \"${PUZZLE_DEP_TRACK_TOKEN}\" ]]; then \
+    curl \
+      -L \
+      -o /tmp/cyclonedx-cli \
+      'https://github.com/CycloneDX/cyclonedx-cli/releases/download/v${CYCLONEDX_CLI_VERSION}/cyclonedx-linux-x64' \
+ && chmod a+x /tmp/cyclonedx-cli \
+ && /tmp/cyclonedx-cli \
+      add files \
+      --no-input \
+      --base-path=/app-src \
+      --output-file /app-src/sbom.json \
+      --output-format json \
+      --exclude /.git/** \
+ && curl \
+      -X 'POST' \
+      -i \
+      -H 'Content-Type: multipart/form-data' \
+      -H 'X-Api-Key: ${PUZZLE_DEP_TRACK_TOKEN}' \
+      -F 'autoCreate=true' \
+      -F 'projectName=${BUILD_REPO}' \
+      -F 'projectVersion=${BUILD_COMMIT}' \
+      -F 'bom=@/app-src/sbom.json' \
+      '${PUZZLE_DEP_TRACK_URL}'; \
+fi"
 
 RUN bash -vxc "${POST_BUILD_SCRIPT:-"echo 'no POST_BUILD_SCRIPT provided'"}"
 
