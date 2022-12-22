@@ -42,5 +42,8 @@ jobs:
           push: true
           tags: ${{ env.DECIDIM_IMAGE_REPO }}:latest
           build-args: |
+            GITHUB_SHA=$GITHUB_SHA
+            GITHUB_REPOSITORY=$GITHUB_REPOSITORY
+            GITHUB_REF_NAME=$GITHUB_REF_NAME
             PUZZLE_DEP_TRACK_URL=${{ secrets.PUZZLE_DEP_TRACK_URL }}
             PUZZLE_DEP_TRACK_TOKEN=${{ secrets.PUZZLE_DEP_TRACK_TOKEN }}

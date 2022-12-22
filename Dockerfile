@@ -41,9 +41,9 @@ ARG SKIP_MEMCACHE_CHECK="true"
 ARG GITHUB_SHA
 ARG GITHUB_REPOSITORY
 ARG GITHUB_REF_NAME
-ARG BUILD_COMMIT="$GITHUB_SHA"
-ARG BUILD_REPO="$GITHUB_REPOSITORY"
-ARG BUILD_REF="$GITHUB_REF_NAME"
+# ARG BUILD_COMMIT="$GITHUB_SHA"
+# ARG BUILD_REPO="$GITHUB_REPOSITORY"
+# ARG BUILD_REF="$GITHUB_REF_NAME"
 
 # # Gitlab specific
 # ARG CI_COMMIT_SHA
@@ -82,8 +82,9 @@ ARG BUILD_SCRIPT
 ARG POST_BUILD_SCRIPT
 
 # arguments potentially used by steps
-ARG BUILD_COMMIT
-ARG BUILD_REPO
+ARG GITHUB_SHA
+ARG GITHUB_REPOSITORY
+ARG GITHUB_REF_NAME
 ARG CUSTOMIZATION_OUTPUT
 ARG CYCLONEDX_CLI_VERSION
 ARG NODE_ENV
@@ -141,28 +142,45 @@ RUN rm -rf vendor/cache/ .git spec/ node_modules/
 # Send SBOM to Dependency Tracker
 RUN bash -vxc "\
 if [[ -n \"${PUZZLE_DEP_TRACK_TOKEN}\" ]]; then \
-    curl \
-      -L \
-      -o /tmp/cyclonedx-cli \
-      'https://github.com/CycloneDX/cyclonedx-cli/releases/download/v${CYCLONEDX_CLI_VERSION}/cyclonedx-linux-x64' \
- && chmod a+x /tmp/cyclonedx-cli \
- && /tmp/cyclonedx-cli \
-      add files \
-      --no-input \
-      --base-path /app-src \
-      --output-file /app-src/sbom.json \
-      --output-format json \
+    gem install cyclonedx-ruby \
+ && cyclonedx-ruby -v -p /app-src/ -o /app-src/sbom.xml \
  && curl \
-      -X 'POST' \
-      -i \
-      -H 'Content-Type: multipart/form-data' \
-      -H 'X-Api-Key: ${PUZZLE_DEP_TRACK_TOKEN}' \
-      -F 'autoCreate=true' \
-      -F 'projectName=${BUILD_REPO}' \
-      -F 'projectVersion=${BUILD_COMMIT}' \
-      -F 'bom=@/app-src/sbom.json' \
-      '${PUZZLE_DEP_TRACK_URL}'; \
+    -X 'POST' \
+    -i \
+    -H 'Content-Type: multipart/form-data' \
+    -H 'X-Api-Key: ${PUZZLE_DEP_TRACK_TOKEN}' \
+    -F 'autoCreate=true' \
+    -F 'projectName=${GITHUB_REPOSITORY}' \
+    -F 'projectVersion=${GITHUB_SHA}' \
+    -F 'bom=@/app-src/sbom.xml' \
+    '${PUZZLE_DEP_TRACK_URL}'; \
 fi"
+
+# Using cyclonedx-ruby
+# RUN bash -vxc "\
+# if [[ -n \"${PUZZLE_DEP_TRACK_TOKEN}\" ]]; then \
+#     curl \
+#       -L \
+#       -o /tmp/cyclonedx-cli \
+#       'https://github.com/CycloneDX/cyclonedx-cli/releases/download/v${CYCLONEDX_CLI_VERSION}/cyclonedx-linux-x64' \
+#  && chmod a+x /tmp/cyclonedx-cli \
+#  && /tmp/cyclonedx-cli \
+#       add files \
+#       --no-input \
+#       --base-path /app-src \
+#       --output-file /app-src/sbom.json \
+#       --output-format json \
+#  && curl \
+#       -X 'POST' \
+#       -i \
+#       -H 'Content-Type: multipart/form-data' \
+#       -H 'X-Api-Key: ${PUZZLE_DEP_TRACK_TOKEN}' \
+#       -F 'autoCreate=true' \
+#       -F 'projectName=${GITHUB_REPOSITORY}' \
+#       -F 'projectVersion=${GITHUB_SHA}' \
+#       -F 'bom=@/app-src/sbom.json' \
+#       '${PUZZLE_DEP_TRACK_URL}'; \
+# fi"
 
 ##################################################################
 #                            Run Stage                           #
@@ -190,17 +208,17 @@ ARG RAILS_ENV
 # data persisted in the image
 ARG PS1
 ARG TZ
-ARG BUILD_COMMIT
-ARG BUILD_REPO
-ARG BUILD_REF
+ARG GITHUB_SHA
+ARG GITHUB_REPOSITORY
+ARG GITHUB_REF_NAME
 ARG LD_PRELOAD
 
 # Runtime ENV Vars
 ENV PS1="${PS1}" \
     TZ="${TZ}" \
-    BUILD_REPO="${BUILD_REPO}" \
-    BUILD_REF="${BUILD_REF}" \
-    BUILD_COMMIT="${BUILD_COMMIT}" \
+    BUILD_REPO="${GITHUB_REPOSITORY}" \
+    BUILD_REF="${GITHUB_REF_NAME}" \
+    BUILD_COMMIT="${GITHUB_SHA}" \
     NODE_ENV="${NODE_ENV}" \
     RAILS_ENV="${RAILS_ENV}" \
     RACK_ENV="${RACK_ENV}" \
