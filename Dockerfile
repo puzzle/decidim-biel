@@ -132,6 +132,13 @@ RUN bundle config set --local deployment 'true' \
 
 RUN bash -vxc "${BUILD_SCRIPT:-"echo 'no BUILD_SCRIPT provided'"}"
 
+RUN bash -vxc "${POST_BUILD_SCRIPT:-"echo 'no POST_BUILD_SCRIPT provided'"}"
+
+# TODO: Save artifacts
+
+RUN rm -rf vendor/cache/ .git spec/ node_modules/
+
+# Send SBOM to Dependency Tracker
 RUN bash -vxc "\
 if [[ -n \"${PUZZLE_DEP_TRACK_TOKEN}\" ]]; then \
     curl \
@@ -142,10 +149,9 @@ if [[ -n \"${PUZZLE_DEP_TRACK_TOKEN}\" ]]; then \
  && /tmp/cyclonedx-cli \
       add files \
       --no-input \
-      --base-path=/app-src \
+      --base-path /app-src \
       --output-file /app-src/sbom.json \
       --output-format json \
-      --exclude /.git/** \
  && curl \
       -X 'POST' \
       -i \
@@ -157,13 +163,6 @@ if [[ -n \"${PUZZLE_DEP_TRACK_TOKEN}\" ]]; then \
       -F 'bom=@/app-src/sbom.json' \
       '${PUZZLE_DEP_TRACK_URL}'; \
 fi"
-
-RUN bash -vxc "${POST_BUILD_SCRIPT:-"echo 'no POST_BUILD_SCRIPT provided'"}"
-
-# TODO: Save artifacts
-
-RUN rm -rf vendor/cache/ .git spec/ node_modules/
-
 
 ##################################################################
 #                            Run Stage                           #
