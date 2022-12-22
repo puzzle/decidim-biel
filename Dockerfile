@@ -13,7 +13,7 @@ ARG CYCLONEDX_CLI_VERSION="0.24.2"
 # ARG BUILD_PACKAGES="git libicu-dev libpq-dev nodejs npm"
 ARG BUILD_PACKAGES="nodejs build-essential"
 # ARG RUN_PACKAGES="clamav clamav-daemon git graphicsmagick libicu-dev libpq5 nodejs poppler-utils"
-ARG RUN_PACKAGES="clamav clamav-daemon nodejs libpq5"
+ARG RUN_PACKAGES="clamav clamav-daemon nodejs libpq5 libjemalloc-dev libjemalloc2"
 
 # Scripts
 ARG PRE_INSTALL_SCRIPT="curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION}.x -o /tmp/nodesource_setup.sh && bash /tmp/nodesource_setup.sh"
@@ -194,6 +194,7 @@ ARG TZ
 ARG BUILD_COMMIT
 ARG BUILD_REPO
 ARG BUILD_REF
+ARG LD_PRELOAD
 
 # Runtime ENV Vars
 ENV PS1="${PS1}" \
@@ -203,7 +204,8 @@ ENV PS1="${PS1}" \
     BUILD_COMMIT="${BUILD_COMMIT}" \
     NODE_ENV="${NODE_ENV}" \
     RAILS_ENV="${RAILS_ENV}" \
-    RACK_ENV="${RACK_ENV}"
+    RACK_ENV="${RACK_ENV}" \
+    LD_PRELOAD="${LD_PRELOAD}"
 
 # Prepare apt-get
 RUN export DEBIAN_FRONTEND=noninteractive \
